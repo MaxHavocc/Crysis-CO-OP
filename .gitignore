@@ -1,0 +1,13 @@
+*.obj
+*.tlog
+*.lastcodeanalysissucceeded
+*.ipch
+*.idb
+*.pdb
+*.log
+.aider*
+__pycache__/
+*.pyc
+*.tmp
+host.cfg
+client.cfg
