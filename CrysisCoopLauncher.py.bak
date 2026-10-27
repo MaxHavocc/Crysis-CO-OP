@@ -1,0 +1,1243 @@
+# CrysisCoopLauncher.py - Crysis Co-op Matchmaking & Launcher
+import os
+import sys
+import json
+import time
+import socket
+import threading
+import subprocess
+import urllib.request
+import tkinter as tk
+from tkinter import ttk, messagebox, simpledialog
+from PIL import Image, ImageTk
+
+# System paths
+CRYSIS_MOD_DIR = r"C:\Program Files (x86)\Steam\steamapps\common\Crysis\Mods\CrysisCoop"
+CRYSIS_ROOT_DIR = r"C:\Program Files (x86)\Steam\steamapps\common\Crysis"
+SAVES_DIR = os.path.join(CRYSIS_MOD_DIR, "Saves")
+PROFILE_FILE = os.path.join(CRYSIS_MOD_DIR, "user_profile.json")
+ICON_ICO = os.path.join(CRYSIS_MOD_DIR, "CrysisCoop.ico")
+ICON_PNG = os.path.join(CRYSIS_MOD_DIR, "CrysisCoop.png")
+
+if not os.path.exists(CRYSIS_MOD_DIR):
+    CRYSIS_MOD_DIR = r"C:\Users\caden\.gemini\antigravity\scratch"
+    SAVES_DIR = os.path.join(CRYSIS_MOD_DIR, "Saves")
+    PROFILE_FILE = os.path.join(CRYSIS_MOD_DIR, "user_profile.json")
+    ICON_ICO = os.path.join(CRYSIS_MOD_DIR, "CrysisCoop.ico")
+    ICON_PNG = os.path.join(CRYSIS_MOD_DIR, "CrysisCoop.png")
+
+os.makedirs(SAVES_DIR, exist_ok=True)
+
+DEFAULT_PORT = 64088
+DISCOVERY_PORT = 64089
+BRIDGE_IPS = ["26.70.173.250", "192.168.88.36", "127.0.0.1"]
+
+MISSIONS = [
+    ("01. Contact (Island)", "island"),
+    ("02. Recovery (Village)", "village"),
+    ("03. Relic (Rescue)", "rescue"),
+    ("04. Assault (Harbor)", "harbor"),
+    ("05. Onslaught (Tank)", "tank"),
+    ("06. Awakening (Mine)", "mine"),
+    ("07. Core (Zero-G Alien Structure)", "core"),
+    ("08. Paradise Lost (Ice)", "ice"),
+    ("09. Exodus (Sphere)", "sphere"),
+    ("10. Ascension (VTOL)", "ascension"),
+    ("11. Reckoning (Carrier)", "fleet"),
+]
+
+DIFFICULTIES = [
+    ("Recruit (Easy)", 1),
+    ("Soldier (Normal)", 2),
+    ("Veteran (Hard)", 3),
+    ("Delta (Extreme)", 4),
+]
+
+ENEMY_MULTIPLIERS = [
+    ("Normal Spawns (1x)", 1.0),
+    ("Increased Spawns (1.5x)", 1.5),
+    ("Double Spawns (2x)", 2.0),
+    ("Insane Spawns (3x)", 3.0),
+]
+
+def get_network_ips():
+    ips = []
+    try:
+        hostname = socket.gethostname()
+        for ip in socket.gethostbyname_ex(hostname)[2]:
+            if not ip.startswith("127."):
+                ips.append(ip)
+    except:
+        pass
+    radmin = [ip for ip in ips if ip.startswith("26.")]
+    lan = [ip for ip in ips if ip.startswith("192.168.")]
+    other = [ip for ip in ips if ip not in radmin and ip not in lan]
+    return radmin + lan + other if (radmin or lan or other) else ["127.0.0.1"]
+
+def load_profile():
+    if os.path.exists(PROFILE_FILE):
+        try:
+            with open(PROFILE_FILE, "r") as f:
+                return json.load(f)
+        except:
+            pass
+    return {"callsign": "Nomad", "last_host_ip": "26.196.29.208", "difficulty": 2, "mission": "island", "enemy_mult": 1.0}
+
+def save_profile(data):
+    try:
+        with open(PROFILE_FILE, "w") as f:
+            json.dump(data, f, indent=4)
+    except Exception as e:
+        print(f"Error saving profile: {e}")
+
+class CrysisTheme:
+    BG_DARK = "#070a0e"
+    BG_HEADER = "#0c1117"
+    BG_PANEL = "#0e1520"
+    BG_INPUT = "#080c10"
+    BG_HOVER = "#15202e"
+    BORDER_SUBTLE = "#1a2636"
+    BORDER_FOCUS = "#28405c"
+    TEXT_TITLE = "#edf4fb"
+    TEXT_NORMAL = "#b5c4d3"
+    TEXT_MUTED = "#607284"
+    CYAN_ACCENT = "#3eb6e6"
+    READY_GREEN = "#2ec67f"
+    AMBER_ALERT = "#df9435"
+    FONT_TITLE = "Trebuchet MS"
+    FONT_UI = "Segoe UI"
+    FONT_MONO = "Consolas"
+
+class CrysisCoopLauncher(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Crysis Co-op")
+        self.geometry("900x640")
+        self.minsize(860, 600)
+        self.configure(bg=CrysisTheme.BG_DARK)
+
+        self.load_app_icon()
+        self.profile = load_profile()
+
+        # State
+        self.server_sock = None
+        self.client_sock = None
+        self.udp_sock = None
+        self.is_hosting = False
+        self.is_connected = False
+        self.local_ready = False
+        self.current_view = "browser"
+
+        self.connected_peers = {}
+        self.current_lobby_data = {}
+        self.discovered_lobbies = {}
+
+        self.setup_styles()
+        self.build_ui()
+
+        threading.Thread(target=self.udp_discovery_listener, daemon=True).start()
+        self.after(300, self.refresh_lobby_browser)
+
+    def load_app_icon(self):
+        try:
+            if os.path.exists(ICON_ICO):
+                self.iconbitmap(ICON_ICO)
+            elif os.path.exists(ICON_PNG):
+                img = ImageTk.PhotoImage(Image.open(ICON_PNG))
+                self.iconphoto(False, img)
+                self._app_icon_ref = img
+        except:
+            pass
+
+    def setup_styles(self):
+        style = ttk.Style(self)
+        style.theme_use("clam")
+        style.configure("TCombobox",
+                        fieldbackground=CrysisTheme.BG_INPUT,
+                        background=CrysisTheme.BG_PANEL,
+                        foreground=CrysisTheme.TEXT_NORMAL,
+                        arrowcolor=CrysisTheme.CYAN_ACCENT,
+                        borderwidth=1,
+                        relief="flat")
+        style.map("TCombobox", fieldbackground=[("readonly", CrysisTheme.BG_INPUT)])
+
+    def build_ui(self):
+        # 1. Header Bar
+        header = tk.Frame(self, bg=CrysisTheme.BG_HEADER, height=56,
+                          highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        header.pack(fill="x")
+        header.pack_propagate(False)
+
+        left_h = tk.Frame(header, bg=CrysisTheme.BG_HEADER)
+        left_h.pack(side="left", padx=20, pady=10)
+
+        lbl_logo = tk.Label(left_h, text="CRYSIS", font=(CrysisTheme.FONT_TITLE, 16, "bold"),
+                            fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_HEADER)
+        lbl_logo.pack(side="left")
+
+        lbl_tag = tk.Label(left_h, text=" // CO-OP", font=(CrysisTheme.FONT_UI, 11, "bold"),
+                           fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_HEADER)
+        lbl_tag.pack(side="left", padx=(4, 0))
+
+        right_h = tk.Frame(header, bg=CrysisTheme.BG_PANEL, highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        right_h.pack(side="right", padx=20, pady=10)
+
+        self.lbl_callsign = tk.Label(right_h, text=f"Player: {self.profile.get('callsign', 'Nomad')}",
+                                     font=(CrysisTheme.FONT_UI, 9, "bold"), fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_PANEL)
+        self.lbl_callsign.pack(side="left", padx=(10, 6), pady=4)
+
+        btn_edit = tk.Button(right_h, text="[ Change Name ]", font=(CrysisTheme.FONT_UI, 8),
+                             fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_PANEL, bd=0, cursor="hand2",
+                             activeforeground=CrysisTheme.TEXT_TITLE, activebackground=CrysisTheme.BG_PANEL,
+                             command=self.prompt_callsign)
+        btn_edit.pack(side="right", padx=(0, 8), pady=4)
+
+        # 2. Status Bar (packed bottom)
+        self.status_bar = tk.Frame(self, bg=CrysisTheme.BG_HEADER, height=44,
+                                   highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        self.status_bar.pack(side="bottom", fill="x")
+        self.status_bar.pack_propagate(False)
+
+        self.lbl_log = tk.Label(self.status_bar, text="Ready.",
+                                font=(CrysisTheme.FONT_MONO, 8), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_HEADER, anchor="w")
+        self.lbl_log.pack(fill="x", padx=20, pady=12)
+
+        # 3. Main Workspace
+        self.workspace = tk.Frame(self, bg=CrysisTheme.BG_DARK)
+        self.workspace.pack(fill="both", expand=True)
+
+        # Left Nav Rail
+        self.nav_rail = tk.Frame(self.workspace, bg=CrysisTheme.BG_HEADER, width=180,
+                                 highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        self.nav_rail.pack(side="left", fill="y")
+        self.nav_rail.pack_propagate(False)
+
+        tk.Label(self.nav_rail, text="MENU", font=(CrysisTheme.FONT_MONO, 8, "bold"),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_HEADER).pack(anchor="w", padx=20, pady=(20, 10))
+
+        self.nav_links = {}
+        self.create_nav_link("browser", "›  Lobbies", self.show_browser_view)
+        self.create_nav_link("create", "›  Host Game", self.show_create_view)
+        self.create_nav_link("saves", "›  Saved Games", self.show_saves_view)
+
+        # Content Container
+        self.content_container = tk.Frame(self.workspace, bg=CrysisTheme.BG_DARK)
+        self.content_container.pack(side="right", fill="both", expand=True, padx=20, pady=16)
+
+        # Panels
+        self.panel_browser = tk.Frame(self.content_container, bg=CrysisTheme.BG_DARK)
+        self.panel_create = tk.Frame(self.content_container, bg=CrysisTheme.BG_DARK)
+        self.panel_saves = tk.Frame(self.content_container, bg=CrysisTheme.BG_DARK)
+        self.panel_lobby_room = tk.Frame(self.content_container, bg=CrysisTheme.BG_DARK)
+
+        self.build_browser_panel()
+        self.build_create_panel()
+        self.build_saves_panel()
+        self.build_lobby_room_panel()
+
+        self.show_browser_view()
+
+    def log_msg(self, msg):
+        ts = time.strftime("%H:%M:%S")
+        if hasattr(self, 'lbl_log') and self.lbl_log:
+            self.lbl_log.config(text=f"[{ts}] {msg}", fg=CrysisTheme.CYAN_ACCENT)
+
+    def prompt_callsign(self):
+        cur = self.profile.get("callsign", "Nomad")
+        name = simpledialog.askstring("Player Name", "Enter Player Name:", parent=self, initialvalue=cur)
+        if name and name.strip():
+            self.profile["callsign"] = name.strip()
+            save_profile(self.profile)
+            self.lbl_callsign.config(text=f"Player: {self.profile['callsign']}")
+            self.log_msg(f"Player name set to: {self.profile['callsign']}")
+
+    def create_nav_link(self, key, text, command):
+        lbl = tk.Label(self.nav_rail, text=text, font=(CrysisTheme.FONT_UI, 10),
+                       fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_HEADER, anchor="w",
+                       padx=20, pady=8, cursor="hand2")
+        lbl.pack(fill="x")
+        lbl.bind("<Button-1>", lambda e: command())
+        lbl.bind("<Enter>", lambda e: lbl.config(fg=CrysisTheme.TEXT_TITLE) if self.current_view != key else None)
+        lbl.bind("<Leave>", lambda e: lbl.config(fg=CrysisTheme.TEXT_MUTED) if self.current_view != key else None)
+        self.nav_links[key] = lbl
+
+    def set_active_nav(self, key):
+        self.current_view = key
+        for k, lbl in self.nav_links.items():
+            if k == key:
+                lbl.config(fg=CrysisTheme.CYAN_ACCENT, font=(CrysisTheme.FONT_UI, 10, "bold"))
+            else:
+                lbl.config(fg=CrysisTheme.TEXT_MUTED, font=(CrysisTheme.FONT_UI, 10))
+
+    def hide_all_panels(self):
+        self.panel_browser.pack_forget()
+        self.panel_create.pack_forget()
+        self.panel_saves.pack_forget()
+        self.panel_lobby_room.pack_forget()
+
+    def show_browser_view(self):
+        self.restore_sidebar()
+        self.set_active_nav("browser")
+        self.hide_all_panels()
+        self.panel_browser.pack(fill="both", expand=True)
+        self.refresh_lobby_browser()
+
+    def show_create_view(self):
+        self.restore_sidebar()
+        self.set_active_nav("create")
+        self.hide_all_panels()
+        self.panel_create.pack(fill="both", expand=True)
+
+    def show_saves_view(self):
+        self.restore_sidebar()
+        self.set_active_nav("saves")
+        self.hide_all_panels()
+        self.panel_saves.pack(fill="both", expand=True)
+        self.refresh_saves()
+
+    def show_lobby_room_view(self):
+        # Lock in: HIDE THE SIDEBAR completely when in a lobby!
+        self.hide_sidebar()
+        self.hide_all_panels()
+        self.panel_lobby_room.pack(fill="both", expand=True)
+
+    def hide_sidebar(self):
+        self.nav_rail.pack_forget()
+
+    def restore_sidebar(self):
+        if not self.nav_rail.winfo_ismapped():
+            self.nav_rail.pack(side="left", fill="y", before=self.content_container)
+
+    # =========================================================================
+    # 1. LOBBIES PANEL
+    # =========================================================================
+    def build_browser_panel(self):
+        card = tk.Frame(self.panel_browser, bg=CrysisTheme.BG_PANEL,
+                        highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        card.pack(fill="both", expand=True)
+
+        top = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        top.pack(fill="x", padx=20, pady=(16, 10))
+
+        tk.Label(top, text="LOBBIES", font=(CrysisTheme.FONT_TITLE, 13, "bold"),
+                 fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_PANEL).pack(side="left")
+
+        btn_refresh = tk.Button(top, text="[ Refresh ]", font=(CrysisTheme.FONT_UI, 9),
+                                fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_PANEL, bd=0, cursor="hand2",
+                                activeforeground=CrysisTheme.TEXT_TITLE, activebackground=CrysisTheme.BG_PANEL,
+                                command=self.refresh_lobby_browser)
+        btn_refresh.pack(side="right")
+
+        self.list_lobbies = tk.Listbox(card, bg=CrysisTheme.BG_INPUT, fg=CrysisTheme.TEXT_NORMAL,
+                                       font=(CrysisTheme.FONT_UI, 10), bd=0, highlightthickness=1,
+                                       highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                                       selectbackground=CrysisTheme.BG_HOVER, selectforeground=CrysisTheme.CYAN_ACCENT)
+        self.list_lobbies.pack(fill="both", expand=True, padx=20, pady=(0, 12))
+        self.list_lobbies.bind("<Double-Button-1>", lambda e: self.join_selected_lobby())
+
+        act_row = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        act_row.pack(fill="x", padx=20, pady=(0, 14))
+
+        btn_join = tk.Button(act_row, text="›  Join Selected Lobby", font=(CrysisTheme.FONT_UI, 10, "bold"),
+                             fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_HOVER, activebackground=CrysisTheme.BORDER_FOCUS,
+                             activeforeground=CrysisTheme.TEXT_TITLE, bd=1, relief="solid",
+                             highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                             padx=16, pady=6, cursor="hand2", command=self.join_selected_lobby)
+        btn_join.pack(side="left")
+
+        conn_bar = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        conn_bar.pack(fill="x", padx=20, pady=(0, 16))
+
+        tk.Label(conn_bar, text="Direct Connect (IP or Name):", font=(CrysisTheme.FONT_UI, 9),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(side="left")
+
+        self.entry_direct = tk.Entry(conn_bar, bg=CrysisTheme.BG_INPUT, fg=CrysisTheme.TEXT_NORMAL,
+                                     font=(CrysisTheme.FONT_UI, 10), insertbackground=CrysisTheme.CYAN_ACCENT,
+                                     bd=0, highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        self.entry_direct.pack(side="left", fill="x", expand=True, padx=10)
+        self.entry_direct.insert(0, self.profile.get("last_host_ip", "26.196.29.208"))
+
+        btn_direct_conn = tk.Button(conn_bar, text="Connect", font=(CrysisTheme.FONT_UI, 9),
+                                    fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_HOVER, bd=1, relief="solid",
+                                    highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                                    padx=12, pady=3, cursor="hand2", command=self.connect_direct)
+        btn_direct_conn.pack(side="right")
+
+    def refresh_lobby_browser(self):
+        self.log_msg("Searching for active lobbies...")
+        threading.Thread(target=self._scan_lobbies_worker, daemon=True).start()
+
+    def _scan_lobbies_worker(self):
+        found = {}
+        for b_ip in BRIDGE_IPS:
+            try:
+                url = f"http://{b_ip}:9000/lobby/list"
+                req = urllib.request.Request(url, headers={"User-Agent": "CrysisLauncher"})
+                with urllib.request.urlopen(req, timeout=1.2) as resp:
+                    if resp.status == 200:
+                        lobbies = json.loads(resp.read().decode("utf-8"))
+                        for l in lobbies:
+                            hip = l.get("host_ip")
+                            if hip:
+                                found[hip] = l
+            except:
+                pass
+
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            query = json.dumps({"action": "query"}).encode("utf-8")
+            for bcast in ["255.255.255.255", "26.255.255.255"]:
+                try: s.sendto(query, (bcast, DISCOVERY_PORT))
+                except: pass
+            s.close()
+        except:
+            pass
+
+        time.sleep(0.5)
+        self.discovered_lobbies = found
+        self.after(0, self.update_lobby_list_ui)
+
+    def update_lobby_list_ui(self):
+        self.list_lobbies.delete(0, "end")
+        if not self.discovered_lobbies:
+            self.list_lobbies.insert("end", "  [ No active lobbies found. Create one or enter IP / Name below ]")
+            return
+
+        my_ips = set(get_network_ips() + ["127.0.0.1", "localhost"])
+        my_callsign = self.profile.get("callsign", "").strip().lower()
+
+        for hip, data in self.discovered_lobbies.items():
+            name = data.get("name", "Lobby")
+            host = data.get("host_name", "Host")
+            mission = data.get("mission", "Contact").split("(")[0].strip()
+            diff = data.get("difficulty", "Normal").split("(")[0].strip()
+            is_self = (hip in my_ips) or (my_callsign and host.strip().lower() == my_callsign)
+
+            if is_self:
+                self.list_lobbies.insert("end", f"  [{name}]  •  Host: {host} (You)  •  {mission}  [{diff}]  •  [Hosted by You - Cannot Join]")
+            else:
+                self.list_lobbies.insert("end", f"  [{name}]  •  Host: {host}  •  {mission}  [{diff}]  •  IP: {hip}")
+
+    def join_selected_lobby(self):
+        sel = self.list_lobbies.curselection()
+        if not sel:
+            messagebox.showinfo("Select Lobby", "Please select a lobby from the list.")
+            return
+        line = self.list_lobbies.get(sel[0]).strip()
+        if line.startswith("[ No active"):
+            return
+        if "[Hosted by You" in line:
+            messagebox.showwarning("Host Lobby", "You cannot join your own hosted lobby as a client. Use the 'Host Game' tab to host.")
+            return
+        parts = line.split("•")
+        target_ip = parts[-1].replace("IP:", "").strip()
+        my_ips = set(get_network_ips() + ["127.0.0.1", "localhost"])
+        if target_ip in my_ips:
+            messagebox.showwarning("Cannot Join Self", "You cannot join your own lobby as a client. Use 'Host Game' to host.")
+            return
+        self.start_client_connection(target_ip)
+
+    def connect_direct(self):
+        val = self.entry_direct.get().strip()
+        if not val:
+            messagebox.showerror("Input Error", "Please enter an IP address or Lobby Name.")
+            return
+
+        my_ips = set(get_network_ips() + ["127.0.0.1", "localhost"])
+        if val in my_ips:
+            messagebox.showwarning("Cannot Join Self", "You entered your own IP address. You cannot connect to yourself as a client.")
+            return
+
+        if "." in val and any(char.isdigit() for char in val):
+            self.start_client_connection(val)
+            return
+
+        for hip, data in self.discovered_lobbies.items():
+            if data.get("name", "").lower() == val.lower():
+                if hip in my_ips:
+                    messagebox.showwarning("Cannot Join Self", "This is your own hosted lobby. You cannot join yourself as a client.")
+                    return
+                self.start_client_connection(hip)
+                return
+
+        messagebox.showerror("Not Found", f"Could not find active lobby '{val}'.")
+
+    # =========================================================================
+    # 2. HOST GAME PANEL
+    # =========================================================================
+    def build_create_panel(self):
+        card = tk.Frame(self.panel_create, bg=CrysisTheme.BG_PANEL,
+                        highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        card.pack(fill="both", expand=True)
+
+        tk.Label(card, text="HOST GAME", font=(CrysisTheme.FONT_TITLE, 13, "bold"),
+                 fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=24, pady=(20, 16))
+
+        inner = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        inner.pack(fill="x", padx=24)
+
+        tk.Label(inner, text="Lobby Name:", font=(CrysisTheme.FONT_UI, 9),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w", pady=(0, 4))
+        self.entry_create_name = tk.Entry(inner, bg=CrysisTheme.BG_INPUT, fg=CrysisTheme.TEXT_TITLE,
+                                          font=(CrysisTheme.FONT_UI, 10), insertbackground=CrysisTheme.CYAN_ACCENT,
+                                          bd=0, highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        self.entry_create_name.pack(fill="x", pady=(0, 14))
+        self.entry_create_name.insert(0, f"{self.profile.get('callsign', 'Nomad')}'s Game")
+
+        tk.Label(inner, text="Mission:", font=(CrysisTheme.FONT_UI, 9),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w", pady=(0, 4))
+        self.mission_var = tk.StringVar(value=MISSIONS[0][0])
+        mission_names = [m[0] for m in MISSIONS]
+        self.cb_mission = ttk.Combobox(inner, textvariable=self.mission_var, values=mission_names, state="readonly")
+        self.cb_mission.pack(fill="x", pady=(0, 14))
+
+        tk.Label(inner, text="Difficulty:", font=(CrysisTheme.FONT_UI, 9),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w", pady=(0, 4))
+        self.diff_var = tk.StringVar(value=DIFFICULTIES[1][0])
+        diff_names = [d[0] for d in DIFFICULTIES]
+        self.cb_diff = ttk.Combobox(inner, textvariable=self.diff_var, values=diff_names, state="readonly")
+        self.cb_diff.pack(fill="x", pady=(0, 14))
+
+        tk.Label(inner, text="Enemy Spawns Multiplier:", font=(CrysisTheme.FONT_UI, 9),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w", pady=(0, 4))
+        self.enemy_var = tk.StringVar(value=ENEMY_MULTIPLIERS[0][0])
+        enemy_names = [e[0] for e in ENEMY_MULTIPLIERS]
+        self.cb_enemy = ttk.Combobox(inner, textvariable=self.enemy_var, values=enemy_names, state="readonly")
+        self.cb_enemy.pack(fill="x", pady=(0, 14))
+
+        tk.Label(inner, text="Network Interface (IP):", font=(CrysisTheme.FONT_UI, 9),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w", pady=(0, 4))
+        ips = get_network_ips()
+        self.ip_var = tk.StringVar(value=ips[0] if ips else "0.0.0.0")
+        self.cb_ip = ttk.Combobox(inner, textvariable=self.ip_var, values=ips, state="readonly")
+        self.cb_ip.pack(fill="x", pady=(0, 20))
+
+        btn_create = tk.Button(inner, text="›  Create Lobby", font=(CrysisTheme.FONT_UI, 10, "bold"),
+                               fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_HOVER, activebackground=CrysisTheme.BORDER_FOCUS,
+                               activeforeground=CrysisTheme.TEXT_TITLE, bd=1, relief="solid",
+                               highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                               padx=20, pady=8, cursor="hand2", command=self.initialize_lobby)
+        btn_create.pack(fill="x")
+
+    def initialize_lobby(self):
+        ip = self.ip_var.get()
+        name = self.entry_create_name.get().strip() or f"{self.profile['callsign']}'s Game"
+
+        try:
+            self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_sock.bind((ip, DEFAULT_PORT))
+            self.server_sock.listen(2)
+            self.is_hosting = True
+            self.local_ready = False
+            self.connected_peers.clear()
+
+            self.current_lobby_data = {
+                "name": name,
+                "host_ip": ip,
+                "host_name": self.profile['callsign'],
+                "mission": self.mission_var.get(),
+                "difficulty": self.diff_var.get(),
+                "enemy_mult": self.enemy_var.get(),
+            }
+            if hasattr(self, 'room_cb_mission'):
+                self.room_cb_mission.set(self.mission_var.get())
+            if hasattr(self, 'room_cb_diff'):
+                self.room_cb_diff.set(self.diff_var.get())
+            if hasattr(self, 'room_cb_enemy'):
+                self.room_cb_enemy.set(self.enemy_var.get())
+
+            self.log_msg(f"Lobby created on {ip}:{DEFAULT_PORT}.")
+
+            threading.Thread(target=self.host_accept_loop, daemon=True).start()
+            threading.Thread(target=self.register_lobby_loop, args=(name, ip), daemon=True).start()
+
+            self.show_lobby_room_view()
+            self.update_lobby_room_ui()
+        except Exception as e:
+            self.log_msg(f"Failed to create lobby: {e}")
+            messagebox.showerror("Error", f"Could not bind to {ip}:{DEFAULT_PORT}:\n{e}")
+
+    # =========================================================================
+    # 3. LOBBY ROOM (CUSTOMIZABLE SETTINGS & SYNCHRONIZED READY-UP)
+    # =========================================================================
+    def build_lobby_room_panel(self):
+        card = tk.Frame(self.panel_lobby_room, bg=CrysisTheme.BG_PANEL,
+                        highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        card.pack(fill="both", expand=True)
+
+        top_info = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        top_info.pack(fill="x", padx=24, pady=(16, 10))
+
+        self.lbl_room_title = tk.Label(top_info, text="LOBBY", font=(CrysisTheme.FONT_TITLE, 14, "bold"),
+                                       fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_PANEL)
+        self.lbl_room_title.pack(anchor="w")
+
+        # Dynamic Game Settings Bar (Host can adjust inside the lobby!)
+        self.settings_frame = tk.Frame(card, bg=CrysisTheme.BG_INPUT,
+                                       highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        self.settings_frame.pack(fill="x", padx=24, pady=(4, 12))
+
+        # Mission dropdown row
+        s_row1 = tk.Frame(self.settings_frame, bg=CrysisTheme.BG_INPUT)
+        s_row1.pack(fill="x", padx=14, pady=6)
+
+        tk.Label(s_row1, text="Mission:", font=(CrysisTheme.FONT_UI, 9, "bold"),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_INPUT, width=14, anchor="w").pack(side="left")
+        self.room_cb_mission = ttk.Combobox(s_row1, values=[m[0] for m in MISSIONS], state="readonly")
+        self.room_cb_mission.pack(side="left", fill="x", expand=True)
+        self.room_cb_mission.bind("<<ComboboxSelected>>", self.on_host_settings_changed)
+
+        # Difficulty & Enemy Spawns row
+        s_row2 = tk.Frame(self.settings_frame, bg=CrysisTheme.BG_INPUT)
+        s_row2.pack(fill="x", padx=14, pady=(0, 6))
+
+        tk.Label(s_row2, text="Difficulty:", font=(CrysisTheme.FONT_UI, 9, "bold"),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_INPUT, width=14, anchor="w").pack(side="left")
+        self.room_cb_diff = ttk.Combobox(s_row2, values=[d[0] for d in DIFFICULTIES], state="readonly", width=18)
+        self.room_cb_diff.pack(side="left", padx=(0, 16))
+        self.room_cb_diff.bind("<<ComboboxSelected>>", self.on_host_settings_changed)
+
+        tk.Label(s_row2, text="Enemies:", font=(CrysisTheme.FONT_UI, 9, "bold"),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_INPUT).pack(side="left", padx=(0, 6))
+        self.room_cb_enemy = ttk.Combobox(s_row2, values=[e[0] for e in ENEMY_MULTIPLIERS], state="readonly")
+        self.room_cb_enemy.pack(side="left", fill="x", expand=True)
+        self.room_cb_enemy.bind("<<ComboboxSelected>>", self.on_host_settings_changed)
+
+        # Player Roster Card
+        roster_frame = tk.Frame(card, bg=CrysisTheme.BG_INPUT,
+                                highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        roster_frame.pack(fill="both", expand=True, padx=24, pady=(0, 14))
+
+        tk.Label(roster_frame, text="PLAYERS", font=(CrysisTheme.FONT_UI, 9, "bold"),
+                 fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_INPUT).pack(anchor="w", padx=16, pady=(10, 6))
+
+        self.roster_rows = tk.Frame(roster_frame, bg=CrysisTheme.BG_INPUT)
+        self.roster_rows.pack(fill="both", expand=True, padx=16, pady=(0, 10))
+
+        # Bottom Control Bar
+        ctl_bar = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        ctl_bar.pack(fill="x", padx=24, pady=(0, 18))
+
+        btn_leave = tk.Button(ctl_bar, text="‹  Leave Lobby", font=(CrysisTheme.FONT_UI, 9),
+                              fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL, bd=0, cursor="hand2",
+                              activeforeground=CrysisTheme.TEXT_TITLE, activebackground=CrysisTheme.BG_PANEL,
+                              command=self.leave_lobby_room)
+        btn_leave.pack(side="left")
+
+        self.btn_ready_toggle = tk.Button(ctl_bar, text="Ready Up", font=(CrysisTheme.FONT_UI, 10, "bold"),
+                                          fg=CrysisTheme.AMBER_ALERT, bg=CrysisTheme.BG_HOVER, bd=1, relief="solid",
+                                          highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                                          padx=20, pady=6, cursor="hand2", command=self.toggle_local_ready)
+        self.btn_ready_toggle.pack(side="left", padx=24)
+
+        self.btn_room_launch = tk.Button(ctl_bar, text="Start Game", font=(CrysisTheme.FONT_UI, 10, "bold"),
+                                         fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL, bd=1, relief="solid",
+                                         highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                                         padx=20, pady=6, cursor="hand2", state="disabled",
+                                         command=self.initiate_squad_launch)
+        self.btn_room_launch.pack(side="right")
+
+    def on_host_settings_changed(self, event=None):
+        if not self.is_hosting:
+            return
+        self.current_lobby_data["mission"] = self.room_cb_mission.get()
+        self.current_lobby_data["difficulty"] = self.room_cb_diff.get()
+        self.current_lobby_data["enemy_mult"] = self.room_cb_enemy.get()
+        self.log_msg(f"Settings updated: {self.current_lobby_data['mission']} | {self.current_lobby_data['difficulty']} | {self.current_lobby_data['enemy_mult']}")
+        self.broadcast_lobby_sync()
+
+    def toggle_local_ready(self):
+        self.local_ready = not self.local_ready
+        if self.local_ready:
+            self.btn_ready_toggle.config(text="✓ Ready (Click to Unready)", fg=CrysisTheme.READY_GREEN)
+        else:
+            self.btn_ready_toggle.config(text="Ready Up", fg=CrysisTheme.AMBER_ALERT)
+
+        if self.is_hosting:
+            self.update_lobby_room_ui()
+            self.broadcast_lobby_sync()
+        elif self.is_connected and self.client_sock:
+            try:
+                pkt = (json.dumps({"action": "set_ready", "ready": self.local_ready}) + "\n").encode('utf-8')
+                self.client_sock.sendall(pkt)
+            except:
+                pass
+
+    def update_lobby_room_ui(self):
+        for w in self.roster_rows.winfo_children():
+            w.destroy()
+
+        name = self.current_lobby_data.get("name", "Lobby")
+        self.lbl_room_title.config(text=f"LOBBY: {name.upper()}")
+
+        # Update settings comboboxes
+        cur_m = self.current_lobby_data.get("mission", MISSIONS[0][0])
+        cur_d = self.current_lobby_data.get("difficulty", DIFFICULTIES[1][0])
+        cur_e = self.current_lobby_data.get("enemy_mult", ENEMY_MULTIPLIERS[0][0])
+
+        if self.is_hosting:
+            self.room_cb_mission.config(state="readonly")
+            self.room_cb_diff.config(state="readonly")
+            self.room_cb_enemy.config(state="readonly")
+            if not self.room_cb_mission.get():
+                self.room_cb_mission.set(cur_m)
+            if not self.room_cb_diff.get():
+                self.room_cb_diff.set(cur_d)
+            if not self.room_cb_enemy.get():
+                self.room_cb_enemy.set(cur_e)
+
+            self._render_roster_row(f"{self.profile['callsign']} (Host)", self.local_ready)
+
+            all_ready = self.local_ready
+            for ip, peer in self.connected_peers.items():
+                callsign = peer.get("callsign", "Player")
+                rdy = peer.get("ready", False)
+                if not rdy:
+                    all_ready = False
+                self._render_roster_row(f"{callsign}", rdy)
+
+            if len(self.connected_peers) == 0:
+                self._render_waiting_row()
+
+            if all_ready and len(self.connected_peers) > 0:
+                self.btn_room_launch.config(state="normal", fg=CrysisTheme.TEXT_TITLE,
+                                            bg=CrysisTheme.BG_HOVER, text="Start Game")
+            else:
+                self.btn_room_launch.config(state="disabled", fg=CrysisTheme.TEXT_MUTED,
+                                            bg=CrysisTheme.BG_PANEL, text="Waiting for all players to ready up...")
+
+        else:
+            # Client: settings are display only (disabled)
+            self.room_cb_mission.set(cur_m)
+            self.room_cb_diff.set(cur_d)
+            self.room_cb_enemy.set(cur_e)
+            self.room_cb_mission.config(state="disabled")
+            self.room_cb_diff.config(state="disabled")
+            self.room_cb_enemy.config(state="disabled")
+
+            players = self.current_lobby_data.get("players", [])
+            for p in players:
+                pname = p.get("name", "Player")
+                is_h = p.get("is_host", False)
+                prdy = p.get("ready", False)
+                lbl = f"{pname} (Host)" if is_h else f"{pname}"
+                self._render_roster_row(lbl, prdy)
+
+            self.btn_room_launch.config(state="disabled", fg=CrysisTheme.TEXT_MUTED,
+                                        bg=CrysisTheme.BG_PANEL, text="Waiting for host to start...")
+
+    def _render_roster_row(self, name_text, is_ready):
+        row = tk.Frame(self.roster_rows, bg=CrysisTheme.BG_INPUT)
+        row.pack(fill="x", pady=4)
+
+        tk.Label(row, text=name_text, font=(CrysisTheme.FONT_UI, 10, "bold"),
+                 fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_INPUT).pack(side="left")
+
+        status_text = "● Ready" if is_ready else "○ Not Ready"
+        status_color = CrysisTheme.READY_GREEN if is_ready else CrysisTheme.AMBER_ALERT
+        tk.Label(row, text=status_text, font=(CrysisTheme.FONT_UI, 9, "bold"),
+                 fg=status_color, bg=CrysisTheme.BG_INPUT).pack(side="right")
+
+    def _render_waiting_row(self):
+        row = tk.Frame(self.roster_rows, bg=CrysisTheme.BG_INPUT)
+        row.pack(fill="x", pady=4)
+
+        tk.Label(row, text="Waiting for second player to connect...",
+                 font=(CrysisTheme.FONT_UI, 9), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_INPUT).pack(side="left")
+
+    def leave_lobby_room(self):
+        if self.is_hosting:
+            self.stop_hosting()
+        elif self.is_connected:
+            if self.client_sock:
+                try: self.client_sock.close()
+                except: pass
+            self.is_connected = False
+
+        self.local_ready = False
+        self.btn_ready_toggle.config(text="Ready Up", fg=CrysisTheme.AMBER_ALERT)
+        self.show_browser_view()
+        self.log_msg("Left lobby.")
+
+    # =========================================================================
+    # 4. NETWORKING
+    # =========================================================================
+    def start_client_connection(self, host_ip):
+        self.profile["last_host_ip"] = host_ip
+        save_profile(self.profile)
+
+        self.log_msg(f"Connecting to {host_ip}:{DEFAULT_PORT}...")
+        threading.Thread(target=self._client_worker, args=(host_ip,), daemon=True).start()
+
+    def _client_worker(self, host_ip):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((host_ip, DEFAULT_PORT))
+            self.client_sock = s
+            self.is_connected = True
+            self.local_ready = False
+
+            handshake = (json.dumps({"action": "join", "callsign": self.profile.get("callsign", "Nomad")}) + "\n").encode('utf-8')
+            s.sendall(handshake)
+
+            self.after(0, self.show_lobby_room_view)
+            self.after(0, lambda: self.btn_ready_toggle.config(text="Ready Up", fg=CrysisTheme.AMBER_ALERT))
+
+            buffer = ""
+            while self.is_connected:
+                data = s.recv(2048)
+                if not data:
+                    break
+                buffer += data.decode('utf-8')
+                while "\n" in buffer:
+                    line, buffer = buffer.split("\n", 1)
+                    if not line.strip():
+                        continue
+                    try:
+                        msg = json.loads(line)
+                        self._handle_client_packet(msg, host_ip)
+                    except:
+                        pass
+        except Exception as e:
+            self.log_msg(f"Connection failed: {e}")
+            self.after(0, self.show_browser_view)
+
+    def _handle_client_packet(self, msg, host_ip):
+        act = msg.get("action")
+        if act == "lobby_sync":
+            self.current_lobby_data = msg
+            self.after(0, self.update_lobby_room_ui)
+        elif act == "preparing":
+            self.log_msg("Host is launching game and loading map... Standby...")
+        elif act == "launch":
+            m_code = msg.get("mission", "island")
+            diff = msg.get("difficulty", 2)
+            enemy = msg.get("enemy_mult", 1.0)
+            self.log_msg("Host map loaded and ready! Launching game client...")
+            self.launch_crysis_client(host_ip, m_code, diff, enemy)
+
+    def host_accept_loop(self):
+        while self.is_hosting:
+            try:
+                conn, addr = self.server_sock.accept()
+                threading.Thread(target=self._handle_incoming_peer, args=(conn, addr), daemon=True).start()
+            except:
+                break
+
+    def _handle_incoming_peer(self, conn, addr):
+        peer_ip = addr[0]
+        self.log_msg(f"Player connected from {peer_ip}")
+        try:
+            buffer = ""
+            while self.is_hosting:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                buffer += data.decode('utf-8')
+                while "\n" in buffer:
+                    line, buffer = buffer.split("\n", 1)
+                    if not line.strip():
+                        continue
+                    try:
+                        msg = json.loads(line)
+                        act = msg.get("action")
+                        if act == "join":
+                            callsign = msg.get("callsign", "Player")
+                            self.connected_peers[peer_ip] = {"conn": conn, "callsign": callsign, "ready": False}
+                            self.log_msg(f"Player '{callsign}' joined lobby.")
+                            self.after(0, self.update_lobby_room_ui)
+                            self.broadcast_lobby_sync()
+                        elif act == "set_ready":
+                            rdy = msg.get("ready", False)
+                            if peer_ip in self.connected_peers:
+                                self.connected_peers[peer_ip]["ready"] = rdy
+                                self.log_msg(f"Player '{self.connected_peers[peer_ip]['callsign']}': {'Ready' if rdy else 'Not Ready'}")
+                                self.after(0, self.update_lobby_room_ui)
+                                self.broadcast_lobby_sync()
+                    except:
+                        pass
+        except:
+            pass
+        finally:
+            if peer_ip in self.connected_peers:
+                del self.connected_peers[peer_ip]
+                self.log_msg(f"Player from {peer_ip} disconnected.")
+                self.after(0, self.update_lobby_room_ui)
+                self.broadcast_lobby_sync()
+
+    def broadcast_lobby_sync(self):
+        players = [{"name": self.profile['callsign'], "is_host": True, "ready": self.local_ready}]
+        for ip, p in self.connected_peers.items():
+            players.append({"name": p.get("callsign", "Player"), "is_host": False, "ready": p.get("ready", False)})
+
+        payload = {
+            "action": "lobby_sync",
+            "name": self.current_lobby_data.get("name", "Lobby"),
+            "host_ip": self.current_lobby_data.get("host_ip", "0.0.0.0"),
+            "mission": self.room_cb_mission.get() if hasattr(self, 'room_cb_mission') else self.mission_var.get(),
+            "difficulty": self.room_cb_diff.get() if hasattr(self, 'room_cb_diff') else self.diff_var.get(),
+            "enemy_mult": self.room_cb_enemy.get() if hasattr(self, 'room_cb_enemy') else self.enemy_var.get(),
+            "players": players
+        }
+        pkt = (json.dumps(payload) + "\n").encode('utf-8')
+        for ip, p in list(self.connected_peers.items()):
+            try:
+                p["conn"].sendall(pkt)
+            except:
+                pass
+
+    def register_lobby_loop(self, lobby_name, ip):
+        while self.is_hosting:
+            payload = {
+                "name": self.current_lobby_data.get("name", lobby_name),
+                "host_ip": ip,
+                "host_name": self.profile['callsign'],
+                "mission": self.room_cb_mission.get() if hasattr(self, 'room_cb_mission') else self.mission_var.get(),
+                "difficulty": self.room_cb_diff.get() if hasattr(self, 'room_cb_diff') else self.diff_var.get(),
+            }
+            data_bytes = json.dumps(payload).encode("utf-8")
+            for b_ip in BRIDGE_IPS:
+                try:
+                    url = f"http://{b_ip}:9000/lobby/register"
+                    req = urllib.request.Request(url, data=data_bytes, headers={"Content-Type": "application/json"})
+                    with urllib.request.urlopen(req, timeout=1.0) as resp:
+                        pass
+                except:
+                    pass
+            time.sleep(3)
+
+    def stop_hosting(self):
+        self.is_hosting = False
+        lobby_name = self.current_lobby_data.get("name", "")
+        for b_ip in BRIDGE_IPS:
+            try:
+                url = f"http://{b_ip}:9000/lobby/unregister"
+                req = urllib.request.Request(url, data=json.dumps({"name": lobby_name, "host_ip": self.ip_var.get()}).encode("utf-8"),
+                                             headers={"Content-Type": "application/json"})
+                with urllib.request.urlopen(req, timeout=1.0) as resp:
+                    pass
+            except:
+                pass
+
+        if self.server_sock:
+            try: self.server_sock.close()
+            except: pass
+        self.connected_peers.clear()
+
+    def udp_discovery_listener(self):
+        try:
+            self.udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.udp_sock.bind(("", DISCOVERY_PORT))
+            while True:
+                data, addr = self.udp_sock.recvfrom(2048)
+                if not data:
+                    continue
+                try:
+                    msg = json.loads(data.decode("utf-8"))
+                    if msg.get("action") == "query" and self.is_hosting:
+                        reply = {
+                            "action": "announce",
+                            "name": self.current_lobby_data.get("name", "Lobby"),
+                            "host_ip": self.ip_var.get(),
+                            "host_name": self.profile['callsign'],
+                            "mission": self.room_cb_mission.get() if hasattr(self, 'room_cb_mission') else self.mission_var.get(),
+                            "difficulty": self.room_cb_diff.get() if hasattr(self, 'room_cb_diff') else self.diff_var.get()
+                        }
+                        self.udp_sock.sendto(json.dumps(reply).encode("utf-8"), addr)
+                except:
+                    pass
+        except:
+            pass
+
+    # =========================================================================
+    # 5. SYNCHRONIZED GAME LAUNCH
+    # =========================================================================
+    def initiate_squad_launch(self):
+        # Resolve mission code robustly
+        cur_mission_text = (self.room_cb_mission.get() or self.current_lobby_data.get("mission") or "island").strip()
+        selected_mission_code = "island"
+        for m_name, m_code in MISSIONS:
+            if m_code == cur_mission_text or m_name == cur_mission_text or m_code in cur_mission_text.lower() or m_name.lower() in cur_mission_text.lower():
+                selected_mission_code = m_code
+                break
+
+        # Resolve difficulty value
+        selected_diff_val = 2
+        cur_diff_text = (self.room_cb_diff.get() or self.current_lobby_data.get("difficulty") or "Normal").strip()
+        for d_name, d_val in DIFFICULTIES:
+            if d_name == cur_diff_text or str(d_val) == cur_diff_text:
+                selected_diff_val = d_val
+                break
+
+        # Resolve enemy multiplier
+        selected_enemy_mult = 1.0
+        cur_enemy_text = (self.room_cb_enemy.get() or self.current_lobby_data.get("enemy_mult") or "1.0x").strip()
+        for e_name, e_val in ENEMY_MULTIPLIERS:
+            if e_name == cur_enemy_text or str(e_val) in cur_enemy_text:
+                selected_enemy_mult = e_val
+                break
+
+        self.log_msg(f"Starting game: {selected_mission_code} (Diff {selected_diff_val}, Enemies {selected_enemy_mult}x)...")
+
+        # Notify clients to display waiting status
+        prep_pkt = (json.dumps({"action": "preparing", "mission": selected_mission_code, "difficulty": selected_diff_val, "enemy_mult": selected_enemy_mult}) + "\n").encode('utf-8')
+        for ip, p in list(self.connected_peers.items()):
+            try: p["conn"].sendall(prep_pkt)
+            except: pass
+
+        # Clean up stale Game.log before starting host
+        log_path = os.path.join(CRYSIS_ROOT_DIR, "Game.log")
+        try:
+            if os.path.exists(log_path):
+                os.remove(log_path)
+        except:
+            pass
+
+        # Launch Host Crysis process
+        self.launch_crysis_host(selected_mission_code, selected_diff_val, selected_enemy_mult)
+
+        # Monitor host level load, and only launch client once server is fully loaded!
+        threading.Thread(target=self._monitor_and_launch_peers,
+                         args=(selected_mission_code, selected_diff_val, selected_enemy_mult),
+                         daemon=True).start()
+
+    def _monitor_and_launch_peers(self, mission_code, difficulty_val, enemy_mult):
+        log_path = os.path.join(CRYSIS_ROOT_DIR, "Game.log")
+        self.log_msg("Host loading level... Waiting for server to finish loading...")
+        server_ready = False
+
+        for attempt in range(25):
+            time.sleep(1)
+            if os.path.exists(log_path):
+                try:
+                    with open(log_path, "r", errors="ignore") as f:
+                        content = f.read()
+
+                    if ("Level " in content and "loaded in" in content) or \
+                       ("Waiting for partner to connect" in content) or \
+                       ("Spawn player for channel 1" in content) or \
+                       ("Level loaded in" in content) or \
+                       ("Entering level: " in content):
+                        self.log_msg(f"Host server level loaded! (in {attempt+1}s)")
+                        server_ready = True
+                        break
+                except:
+                    pass
+
+        if not server_ready:
+            self.log_msg("Host load timeout elapsed, signaling partner to connect...")
+
+        # Small 2 second settle time to ensure socket listening
+        time.sleep(2.0)
+
+        launch_pkt = (json.dumps({"action": "launch", "mission": mission_code, "difficulty": difficulty_val, "enemy_mult": enemy_mult}) + "\n").encode('utf-8')
+        for ip, p in list(self.connected_peers.items()):
+            try:
+                p["conn"].sendall(launch_pkt)
+                self.log_msg(f"Partner connection signal transmitted ({ip})!")
+            except Exception as e:
+                self.log_msg(f"Failed to signal {ip}: {e}")
+
+    def launch_crysis_host(self, mission_code, difficulty_val, enemy_mult):
+        callsign = self.profile.get("callsign", "Nomad")
+        cfg_content = f"""sys_spec_ObjectDetail 1
+sys_spec_Physics 1
+sv_bind 0.0.0.0
+sv_servername CrysisCoopServer
+sv_gamerules Coop
+sv_port 64087
+sv_lanonly 1
+sv_cheatprotection 0
+net_lanbrowser 1
+log_verbosity 3
+net_log 0
+net_disconnect_on_rmi_error 0
+net_inactivitytimeout 120
+sv_timeout_disconnect 120
+net_enable_voice_chat 0
+sv_gs_trackstats 0
+sv_gs_report 0
+g_breaktimeoutframes 1000000
+r_Fullscreen 0
+r_Width 1280
+r_Height 720
+g_skipIntro = 0
+cl_hud 1
+net_name {callsign}
+cl_gs_nick {callsign}
+g_difficultyLevel = {difficulty_val}
+hud_subtitles = 1
+hud_startPaused = 0
+bind f10 coop_teleport
+bind f8 coop_skip_cutscene
+bind f9 coop_menu
+bind f11 coop_god
+map {mission_code} s
+"""
+        try:
+            subprocess.run(["taskkill", "/F", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
+                           capture_output=True, timeout=5)
+            time.sleep(0.5)
+        except Exception:
+            pass
+
+        cfg_paths = [
+            os.path.join(CRYSIS_ROOT_DIR, "host.cfg"),
+            os.path.join(CRYSIS_ROOT_DIR, "Game", "host.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "host.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "Game", "host.cfg"),
+        ]
+        for p in cfg_paths:
+            try:
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                with open(p, "w", encoding="utf-8") as f:
+                    f.write(cfg_content)
+            except Exception as e:
+                self.log_msg(f"Notice: Failed to write {p}: {e}")
+
+        exe_path = os.path.join(CRYSIS_ROOT_DIR, "Bin32", "Crysis.exe")
+        args = [exe_path, "-dx9", "-mod", "CrysisCoop", "-DEVMODE", "-windowed", "+sys_spec", "1", "+exec", "host.cfg"]
+        self.log_msg(f"Launching Crysis Host ({mission_code}) process as '{callsign}'...")
+        try:
+            subprocess.Popen(args, cwd=CRYSIS_ROOT_DIR)
+            self.log_msg(f"Crysis Host ({mission_code}) process started.")
+        except Exception as e:
+            self.log_msg(f"Failed to launch Crysis.exe: {e}")
+
+    def launch_crysis_client(self, host_ip, mission_code, difficulty_val, enemy_mult):
+        callsign = self.profile.get("callsign", "Psycho")
+        cfg_content = f"""sys_spec_ObjectDetail 1
+sys_spec_Physics 1
+log_verbosity 3
+net_log 0
+net_disconnect_on_rmi_error 0
+net_inactivitytimeout 120
+sv_timeout_disconnect 120
+net_enable_voice_chat 0
+sv_lanonly 1
+cl_serverport 64087
+g_skipIntro = 0
+cl_hud 1
+net_name {callsign}
+cl_gs_nick {callsign}
+sv_gs_trackstats 0
+sv_gs_report 0
+g_breaktimeoutframes 1000000
+r_Fullscreen 0
+r_Width 1280
+r_Height 720
+g_difficultyLevel = {difficulty_val}
+connect {host_ip}:64087
+hud_subtitles = 1
+hud_startPaused = 0
+bind f10 coop_teleport
+bind f8 coop_skip_cutscene
+bind f9 coop_menu
+bind f11 coop_god
+"""
+        try:
+            subprocess.run(["taskkill", "/F", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
+                           capture_output=True, timeout=5)
+            time.sleep(0.5)
+        except Exception:
+            pass
+
+        cfg_paths = [
+            os.path.join(CRYSIS_ROOT_DIR, "client.cfg"),
+            os.path.join(CRYSIS_ROOT_DIR, "Game", "client.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "client.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "Game", "client.cfg"),
+        ]
+        for p in cfg_paths:
+            try:
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                with open(p, "w", encoding="utf-8") as f:
+                    f.write(cfg_content)
+            except Exception as e:
+                self.log_msg(f"Notice: Failed to write {p}: {e}")
+
+        exe_path = os.path.join(CRYSIS_ROOT_DIR, "Bin32", "Crysis.exe")
+        args = [exe_path, "-dx9", "-mod", "CrysisCoop", "-DEVMODE", "-windowed", "+sys_spec", "1", "+exec", "client.cfg"]
+        self.log_msg(f"Launching Crysis Client process as '{callsign}'...")
+        try:
+            subprocess.Popen(args, cwd=CRYSIS_ROOT_DIR)
+            self.log_msg("Crysis Client process started.")
+        except Exception as e:
+            self.log_msg(f"Failed to launch Crysis.exe: {e}")
+
+    # =========================================================================
+    # 6. SAVED GAMES PANEL
+    # =========================================================================
+    def build_saves_panel(self):
+        card = tk.Frame(self.panel_saves, bg=CrysisTheme.BG_PANEL,
+                        highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE)
+        card.pack(fill="both", expand=True)
+
+        tk.Label(card, text="SAVED GAMES", font=(CrysisTheme.FONT_TITLE, 13, "bold"),
+                 fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=24, pady=(20, 12))
+
+        self.list_saves = tk.Listbox(card, bg=CrysisTheme.BG_INPUT, fg=CrysisTheme.TEXT_NORMAL,
+                                     font=(CrysisTheme.FONT_UI, 9), bd=0, highlightthickness=1,
+                                     highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                                     selectbackground=CrysisTheme.BG_HOVER, selectforeground=CrysisTheme.CYAN_ACCENT)
+        self.list_saves.pack(fill="both", expand=True, padx=24, pady=(0, 16))
+
+        row = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
+        row.pack(fill="x", padx=24, pady=(0, 20))
+
+        btn_load = tk.Button(row, text="›  Load Save to Host", font=(CrysisTheme.FONT_UI, 10, "bold"),
+                             fg=CrysisTheme.TEXT_TITLE, bg=CrysisTheme.BG_HOVER, bd=1, relief="solid",
+                             highlightthickness=1, highlightbackground=CrysisTheme.BORDER_SUBTLE,
+                             padx=16, pady=6, cursor="hand2", command=self.load_selected_save)
+        btn_load.pack(side="left")
+
+    def refresh_saves(self):
+        self.list_saves.delete(0, "end")
+        if not os.path.exists(SAVES_DIR):
+            return
+        files = [f for f in os.listdir(SAVES_DIR) if f.endswith(".json")]
+        if not files:
+            self.list_saves.insert("end", "  No saved games found.")
+            return
+        for f in files:
+            try:
+                with open(os.path.join(SAVES_DIR, f), "r") as fp:
+                    data = json.load(fp)
+                mission = data.get("mission", "Unknown")
+                ts = data.get("timestamp", "")
+                players = list(data.get("players", {}).keys())
+                self.list_saves.insert("end", f"  {f}  |  Mission: {mission}  |  Time: {ts}  |  Players: {', '.join(players)}")
+            except:
+                self.list_saves.insert("end", f"  {f} (Corrupted)")
+
+    def load_selected_save(self):
+        sel = self.list_saves.curselection()
+        if not sel:
+            messagebox.showinfo("Select Save", "Please select a save game from the list.")
+            return
+        text = self.list_saves.get(sel[0]).strip()
+        fname = text.split("|")[0].strip()
+        fpath = os.path.join(SAVES_DIR, fname)
+        if os.path.exists(fpath):
+            with open(fpath, "r") as fp:
+                data = json.load(fp)
+            mission = data.get("mission", "island")
+            diff = data.get("difficulty", 2)
+            for m_name, m_code in MISSIONS:
+                if m_code == mission:
+                    self.mission_var.set(m_name)
+                    break
+            for d_name, d_val in DIFFICULTIES:
+                if d_val == diff:
+                    self.diff_var.set(d_name)
+                    break
+            self.show_create_view()
+            self.log_msg(f"Loaded save: {fname}")
+            messagebox.showinfo("Save Loaded", f"Save '{fname}' loaded!\nMission: {mission}\nReady to host.")
+
+if __name__ == "__main__":
+    app = CrysisCoopLauncher()
+    app.mainloop()

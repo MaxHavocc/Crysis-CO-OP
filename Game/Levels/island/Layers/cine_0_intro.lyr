@@ -1,0 +1,1107 @@
+<ObjectLayer>
+ <Layer Name="cine_0_intro" GUID="{CB28FBD0-E99E-4314-B1AE-0C40573E365B}" Hidden="0" Frozen="0" External="1" Exportable="1">
+  <LayerObjects>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{A18E2500-A3ED-4C6E-A0D9-1C44909843E8}" Name="cine_0_tail_light3" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="3.9919434,-30.397705,-33.343506" Rotate="0.54167533,-0.45451939,-0.45451948,-0.54167521" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="80">
+     <Color clrDiffuse="0.568627,0.741176,1" fDiffuseMultiplier="0.3" fHDRDynamic="1.5" fSpecularMultiplier="0.4"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{566E0602-865E-49C9-A1BA-FB516E453F8F}" Name="cine_0_swirling_fog_pfx1" Pos="2288.5901,3918.7329,184.38" Rotate="0.70710677,0.70710677,0,0" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="0" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="1.5" ParticleEffect="misc.fog.research_dome_fog" bPrime="1" PulsePeriod="0" Scale="1" soclasses_SmartObjectClass="" SpeedScale="0.01"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{87D0DF04-86F2-474F-9B22-78EAEB460641}" Name="trigger_music_intro_c17_exterior" Pos="-471.56104,2759.9351,0" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{772D1408-1231-42F0-9203-5E1EBF54789B}" Name="cine_0_tail_light" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="35.827637,0.061279297,7.8442993" Rotate="0.62585616,0.021658644,0.0195233,0.77939332" ColorRGB="65535" Material="Materials/lightbeams/lightflare_runway" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="2">
+     <Color clrDiffuse="1,0.984314,0.901961" fDiffuseMultiplier="1" fHDRDynamic="1" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="0" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="2" fCoronaDistSizeFactor="0.5" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{85CFE40A-3F6D-4AA3-8E2C-D15C6AD1FB9F}" Name="cine_0_tail_light4" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="7.9681396,32.638916,5.3244019" Rotate="0.6258561,0.021658648,0.019523297,0.77939332" ColorRGB="65535" Material="Materials/lightbeams/lightflare_runway" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1">
+     <Color clrDiffuse="0.247059,0.976471,0" fDiffuseMultiplier="1" fHDRDynamic="0.5" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="0" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="2" fCoronaDistSizeFactor="0.5" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{1F53E20D-8445-4AA5-A8ED-E1C0FECC6D4E}" Name="cine_0_c17_engineLight1" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-2.3022461,-18.042236,4.7729492" Rotate="1,1.5210052e-016,1.1920929e-008,3.7066631e-008" Scale="1.2500001,1.2500001,1.2499999" ColorRGB="65535" Material="Materials/lightbeams/lightbeam_alien" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1.5">
+     <Color clrDiffuse="1,0.611765,0.192157" fDiffuseMultiplier="2" fHDRDynamic="4" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="60" fProjectorNearPlane="0" texture_Texture="textures/lights/alien_ringlight.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{0C6EDB10-59DB-47C6-842D-C45654CA14FA}" Name="cine_0_shipGlow_dummyTrigger" Pos="2276.5151,3906.7947,193.875" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{9A230B11-3EB6-44F1-AC68-B24B7A509F64}" Name="VolumeObject99" Pos="1816.3236,-2700.4333,1205.4105" Rotate="0.95105648,0,-0.309017,0" Scale="16.406656,16.406656,16.406656" ColorRGB="65535" Material="Materials/clouds/island_clouds" MinSpec="3" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="VolumeObject">
+    <Properties file_VolumeObjectFile="libs/clouds/ascension_clouds.xml">
+     <Movement bAutoMove="0" fFadeDistance="0" vector_SpaceLoopBox="2000,2000,2000" vector_Speed="0,0,0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{3AC6F712-A93E-4F5F-9666-00B019333930}" Name="cine_0_dust_pfx" Pos="2287.8943,3921.5344,189.86292" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="0" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="0.15" ParticleEffect="misc.fog.dust_in_light_beams" bPrime="1" PulsePeriod="0" Scale="2.5" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{DC0CFB13-FB83-44D2-AA2D-DE8223715217}" Name="cine_0_c17_moonLight" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="14.927979,28.787109,-15.311707" Rotate="0.60757625,-0.28834021,-0.16709091,-0.7209658" Scale="1.2500001,1.2500001,1.2499999" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="1" Radius="65">
+     <Color clrDiffuse="0.32549,0.458824,0.807843" fDiffuseMultiplier="1" fHDRDynamic="0.5" fSpecularMultiplier="1"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="0" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{E2C8362A-98DB-40E6-A055-62AB81C3E319}" Name="cine_0_FogVolume" Pos="2288.5642,3918.6943,187.28859" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="FogVolume">
+    <Properties bActive="1" color_Color="0.00392157,0.027451,0.0392157" FallOffDirLati="90" FallOffDirLong="0" FallOffScale="0.37" FallOffShift="8.17" GlobalDensity="0.01" fHDRDynamic="0" SoftEdges="1" bUseGlobalFogColor="0" VolumeType="1">
+     <Size x="20" y="20" z="25"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{1D00022B-AE02-474E-9B0B-4B1C71E333CB}" Name="cine_0_tail_light6" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-3.0355225,-0.0053710938,9.2680054" Rotate="0.62585616,0.02165864,0.019523302,0.77939332" ColorRGB="65535" Material="Materials/lightbeams/lightflare_runway" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1">
+     <Color clrDiffuse="0.976471,0,0" fDiffuseMultiplier="1" fHDRDynamic="0.5" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="0" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="2" fCoronaDistSizeFactor="0.5" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{69905E33-534C-45D2-B72E-330FFB0EA781}" Name="cine_0_tail_light2" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="28.524292,1.6296387,8.7049561" Rotate="0.54167533,-0.45451942,-0.45451945,-0.54167521" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="1" Radius="15">
+     <Color clrDiffuse="0.992157,0.913726,0.792157" fDiffuseMultiplier="3" fHDRDynamic="1.5" fSpecularMultiplier="1"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture="textures/lights/light_beam.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{5AA0FD3F-6F42-4A8B-A6EF-0668E790453F}" Name="cine_0_c17_engineLight2" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-6.6279297,-9.8093262,5.1800537" Rotate="1,3.9968021e-017,0,1.3411043e-008" Scale="1.2500001,1.2500001,1.2499999" ColorRGB="65535" Material="Materials/lightbeams/lightbeam_alien" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1.5">
+     <Color clrDiffuse="1,0.611765,0.192157" fDiffuseMultiplier="2" fHDRDynamic="4.5" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="60" fProjectorNearPlane="0" texture_Texture="textures/lights/alien_ringlight.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{1DDEC944-9C5F-44B3-B46D-F677BE3DD389}" Name="cine_0_c17_exhaust_pfx5" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="19.809692,18.287598,4.5030518" Rotate="0.70090926,0,0,-0.71325046" Scale="1.2499998,1.2499998,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="3" ParticleEffect="misc.contrails.c17" bPrime="1" PulsePeriod="0" Scale="2" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Brush" Layer="cine_0_intro" Id="{A758A14B-A507-4103-8EB5-57FAB1085741}" Name="ice_spike_small4" Pos="2285.51,3920.4299,182.99001" ColorRGB="16777215" MatLayersMask="0" Prefab="objects/library/alien/generic_elements/spikes/spike_e_breakable.cgf" OutdoorOnly="0" CastShadowMaps="0" SupportSecondVisarea="0" CastRAMmap="0" ReceiveRAMmap="0" Hideable="0" LodRatio="100" ViewDistRatio="100" NotTriangulate="0" AIRadius="-1" NoStaticDecals="0" RAMmapQuality="1" NoAmnbShadowCaster="0" RecvWind="0" RndFlags="0"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{5713B74B-C33F-489B-8915-4F346993A4CF}" Name="VolumeObject114" Pos="1718.7782,-1220.0421,1193.3109" Rotate="0.66401416,0.026410297,-0.16411386,0.72900915" Scale="50.607353,50.607357,50.607357" ColorRGB="65535" Material="Materials/clouds/island_clouds" MinSpec="2" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="VolumeObject">
+    <Properties file_VolumeObjectFile="libs/clouds/ascension_clouds.xml">
+     <Movement bAutoMove="0" fFadeDistance="0" vector_SpaceLoopBox="2000,2000,2000" vector_Speed="0,0,0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{97870D4F-4217-4774-9C0A-9AE2D117A408}" Name="VolumeObject103" Pos="1416.5884,-2579.9666,1232.7372" Rotate="0.99985659,0.012632535,-0.008736928,-0.0071374052" Scale="1.3619633,1.3619634,1.3619618" ColorRGB="65535" Material="Materials/clouds/island_clouds" MinSpec="3" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="VolumeObject">
+    <Properties file_VolumeObjectFile="libs/clouds/cumulus_dense_100_100_40_alt1.xml">
+     <Movement bAutoMove="0" fFadeDistance="0" vector_SpaceLoopBox="2000,2000,2000" vector_Speed="0,0,0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{9F634551-CD2D-4680-A7BC-BB3D1F0D89E2}" Name="cine_0_cameraShake_dummyTrigger" Pos="2067.2146,754.5155,1027.2361" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Brush" Layer="cine_0_intro" Id="{7CD15751-C853-4FAB-AB5E-A07ABEB28E68}" Name="ice_spike_small2" Pos="2284.6899,3913.4419,185.85001" Rotate="0.99998242,0,-0.0059340852,0" ColorRGB="16777215" MatLayersMask="0" Prefab="objects/library/alien/generic_elements/spikes/spike_e_breakable.cgf" OutdoorOnly="0" CastShadowMaps="0" SupportSecondVisarea="0" CastRAMmap="0" ReceiveRAMmap="0" Hideable="0" LodRatio="100" ViewDistRatio="100" NotTriangulate="0" AIRadius="-1" NoStaticDecals="0" RAMmapQuality="1" NoAmnbShadowCaster="0" RecvWind="0" RndFlags="0"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{9FDA6E51-09EE-48C1-A5E4-4B3CCFA18771}" Name="cine_0_c17_exhaust_pfx2" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-6.9633789,9.6789551,5.2030029" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499999,1.2499999,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="1" ParticleEffect="vehicle_fx.US_fighter.c17_thrusters" bPrime="1" PulsePeriod="0" Scale="1.25" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{DC0E8A56-15B8-4173-9B1D-B631A2067F46}" Name="cine_0_fade_dummyTrigger_2" Pos="2062.7449,754.4231,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{8F8CE357-0000-441D-B5F7-67E8B7D709E3}" Name="cine_0_c17_engineLight3" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-6.6107178,9.6931152,5.2557373" Rotate="1,-2.9802323e-009,-2.9802323e-009,1.2479722e-008" Scale="1.2500001,1.2500001,1.2499999" ColorRGB="65535" Material="Materials/lightbeams/lightbeam_alien" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1.5">
+     <Color clrDiffuse="1,0.611765,0.192157" fDiffuseMultiplier="2" fHDRDynamic="4.5" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="60" fProjectorNearPlane="0" texture_Texture="textures/lights/alien_ringlight.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Brush" Layer="cine_0_intro" Id="{8E043258-01B7-43FB-8EEA-5A9960D456DC}" Name="ice_spike_small5" Pos="2283.53,3920.0901,182.64" Rotate="0.99970573,0,-0.024257695,0" ColorRGB="16777215" MatLayersMask="0" Prefab="objects/library/alien/generic_elements/spikes/spike_b_breakable.cgf" OutdoorOnly="0" CastShadowMaps="0" SupportSecondVisarea="0" CastRAMmap="0" ReceiveRAMmap="0" Hideable="0" LodRatio="100" ViewDistRatio="100" NotTriangulate="0" AIRadius="-1" NoStaticDecals="0" RAMmapQuality="1" NoAmnbShadowCaster="0" RecvWind="0" RndFlags="0"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{85A32259-41E2-4DDB-946B-C0163A5AECB7}" Name="cine_0_gunShot_SES" Pos="2065.0776,756.35767,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="SoundEventSpot">
+    <Properties bEnabled="1" bIgnoreCulling="1" bIgnoreObstruction="1" soundName="" bOnce="0" bPlay="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{88F2C559-5D2F-491E-89C8-0C5CF950AA22}" Name="cine_0_helena_SES" Pos="2064.2651,756.45142,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="SoundEventSpot">
+    <Properties bEnabled="1" bIgnoreCulling="0" bIgnoreObstruction="0" soundName="" bOnce="0" bPlay="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{224A5C5A-6FA8-421C-A8EA-A8E2D0E7C8D5}" Name="cine_0_tail_light1" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="29.139526,-1.4189453,8.7998047" Rotate="0.49631333,0.51257527,-0.45997849,0.52854466" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="12">
+     <Color clrDiffuse="0.992157,0.913726,0.792157" fDiffuseMultiplier="3" fHDRDynamic="1.5" fSpecularMultiplier="1"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture="textures/lights/light_beam.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Brush" Layer="cine_0_intro" Id="{374B6761-7894-4CD6-89C4-D468D4DBEEE6}" Name="ice_spike_small1" Pos="2290.8101,3911.3899,183.50999" Rotate="0.66745716,0.02102734,0.053614214,-0.74241781" ColorRGB="16777215" MatLayersMask="0" Prefab="objects/library/alien/generic_elements/spikes/spike_d_breakable.cgf" OutdoorOnly="0" CastShadowMaps="0" SupportSecondVisarea="0" CastRAMmap="0" ReceiveRAMmap="0" Hideable="0" LodRatio="100" ViewDistRatio="100" NotTriangulate="0" AIRadius="-1" NoStaticDecals="0" RAMmapQuality="1" NoAmnbShadowCaster="0" RecvWind="0" RndFlags="0"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{5FC94364-8C2F-44ED-8F27-FCD608342AF8}" Name="cine_0_Msg_dummyTrigger" Pos="2065.3381,755.11865,1026.6584" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="SequenceObject" Layer="cine_0_intro" Id="{9D9D2965-1485-4D44-BC88-4761CC8768B6}" Name="cine_0_blackAudioScreen" ColorRGB="16744319">
+    <Sequence Name="cine_0_blackAudioScreen" Flags="360" StartTime="0" EndTime="44">
+     <Nodes>
+      <Node Id="0" Type="2" Name="Scene">
+       <Track ParamId="6" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" node="cine_0_blackRadio_cam"/>
+       </Track>
+       <Track ParamId="7" Flags="0" StartTime="0" EndTime="44"/>
+       <Track ParamId="8" Flags="0" StartTime="0" EndTime="44"/>
+       <Track ParamId="9" Flags="0" StartTime="0" EndTime="44"/>
+      </Node>
+      <Node Id="-1997355687" Type="1" Name="cine_0_helena_SES" Pos="2064.2651,756.45142,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="491E5D2F88F2C559">
+       <Track ParamId="7" Flags="0" StartTime="0" EndTime="44">
+        <Key time="7.5" filename="languages/dialog/island/helena_island_ab1_00000.mp2" volume="1" pan="127" duration="5.9650002" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="1" Loop="0" Voice="1" LipSync="0"/>
+        <Key time="15.000002" filename="languages/dialog/island/helena_island_ab1_00001.mp2" volume="1" pan="127" duration="4.868" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+        <Key time="22.600002" filename="languages/dialog/island/helena_island_ab1_00002.mp2" volume="1" pan="127" duration="8.8130007" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+        <Key time="32.800003" filename="languages/dialog/island/helena_island_ab1_00003.mp2" volume="1" pan="127" duration="5.9390001" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+       </Track>
+      </Node>
+      <Node Id="-64148859" Type="1" Name="cine_0_korean_SES" Pos="2064.6714,756.42017,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="45DB5084FC2D2A85">
+       <Track ParamId="7" Flags="0" StartTime="0" EndTime="44">
+        <Key time="31.400002" filename="languages/dialog/island/korean_soldier_1_island_ab1_00001.mp2" volume="1" pan="127" duration="1.4720001" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+       </Track>
+      </Node>
+      <Node Id="-2052906407" Type="1" Name="cine_0_gunShot_SES" Pos="2065.0776,756.35767,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4DDB41E285A32259">
+       <Track ParamId="7" Flags="0" StartTime="0" EndTime="44">
+        <Key time="13.800003" filename="Sounds/weapons:fy71:fire_3rd_single" volume="1" pan="127" duration="1.539" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="1"/>
+        <Key time="19.899998" filename="Sounds/weapons:fy71:fire_3rd_single" volume="1" pan="127" duration="1.539" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="1"/>
+        <Key time="32.099998" filename="Sounds/weapons:fy71:fire_3rd_single" volume="1" pan="127" duration="1.539" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="1"/>
+       </Track>
+       <Track ParamId="8" Flags="0" StartTime="0" EndTime="44">
+        <Key time="14" filename="Sounds/weapons:fy71:fire_3rd_loop" volume="1" pan="127" duration="0" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="1" Voice="0" LipSync="1"/>
+        <Key time="15.400002" filename="" volume="1" pan="127" duration="0" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="1"/>
+        <Key time="20.399998" filename="Sounds/weapons:fy71:fire_3rd_loop" volume="1" pan="127" duration="0" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="1" Voice="0" LipSync="1"/>
+        <Key time="21.099998" filename="" volume="1" pan="127" duration="0" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="1"/>
+       </Track>
+      </Node>
+      <Node Id="1607025508" Type="1" Name="cine_0_Msg_dummyTrigger" Pos="2065.3381,755.11865,1026.6584" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="44ED8C2F5FC94364">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0.5" event="Enable"/>
+       </Track>
+      </Node>
+      <Node Id="-725538321" Type="3" Name="cine_0_blackRadio_cam" Pos="2288.5,3907.6201,189.48" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="42262C3FD4C129EF" FOV="60.00013">
+       <Track ParamId="1" Flags="0">
+        <Key time="5" value="2288.5,3907.6201,189.48"/>
+        <Key time="40" value="2288.5901,3915.3,189.39"/>
+        <Key time="44" value="2288.5901,3916,189.39" tens="1"/>
+       </Track>
+       <Track ParamId="2" Flags="0">
+        <Key time="5" value="1,0,0,0"/>
+       </Track>
+       <Track ParamId="0" Flags="0"/>
+      </Node>
+      <Node Id="-1545287303" Type="1" Name="cine_0_caveLight_fill" Pos="2288.04,3908.6411,189.7084" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4CD08431A3E4C979">
+       <Track ParamId="1" Flags="0">
+        <Key time="5" value="2288.04,3908.6411,189.7084"/>
+        <Key time="40.000008" value="2288.0869,3920.2393,189.7084"/>
+       </Track>
+       <Track ParamId="2" Flags="0"/>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="5" event="Enable"/>
+        <Key time="44.000008" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-643172427" Type="1" Name="cine_0_fade_dummyTrigger" Pos="2064.2263,754.43671,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="47A2D9ECD9A9F7B5">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Leave"/>
+        <Key time="5" event="Enable"/>
+        <Key time="39.5" event="Enter"/>
+       </Track>
+      </Node>
+      <Node Id="1013787330" Type="1" Name="cine_1_alienShip_light" Pos="2288.25,3937.374,189.0625" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="45B446743C6D2AC2">
+       <Track ParamId="1" Flags="0">
+        <Key time="36" value="2288.25,3937.374,189.0625" tens="1"/>
+        <Key time="37" value="2288.25,3935.0801,189.0625" tens="1"/>
+        <Key time="38" value="2288.25,3935.0801,189.0625" tens="1"/>
+       </Track>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Disable"/>
+        <Key time="36" event="Enable"/>
+        <Key time="44" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-1943225611" Type="1" Name="cine_1_caveDoor_aniObj" Pos="2288.24,3938.75,263.07001" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="457ABCF28C2CBAF5">
+       <Track ParamId="1" Flags="0"/>
+       <Track ParamId="2" Flags="0"/>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44"/>
+       <Track ParamId="10" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" anim="hull_part_mine_cine0Option2" length="5.7333336"/>
+        <Key time="0.5"/>
+        <Key time="34" anim="hull_part_mine_cine0Option2" length="5.7333336"/>
+       </Track>
+      </Node>
+      <Node Id="208591632" Type="1" Name="cine_0_shipGlow_dummyTrigger" Pos="2276.5151,3906.7947,193.875" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="47C659DB0C6EDB10">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Enable"/>
+        <Key time="27" event="Enter"/>
+       </Track>
+      </Node>
+      <Node Id="-656440880" Type="1" Name="cine_0_volume_light" Pos="2288.25,3928.6201,189.0625" Rotate="0.70710677,0,0,-0.70710677" Scale="1,1,1" EntityGUID="44D8C112D8DF81D0">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Disable"/>
+        <Key time="34" event="Enable"/>
+        <Key time="44" event="Disable"/>
+       </Track>
+       <Track ParamId="1" Flags="0">
+        <Key time="34" value="2288.25,3928.6201,189.0625"/>
+       </Track>
+      </Node>
+      <Node Id="986117906" Type="1" Name="cine_0_dust_pfx" Pos="2287.8943,3921.5344,189.86292" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4F5FA93E3AC6F712">
+       <Track ParamId="1" Flags="0"/>
+       <Track ParamId="2" Flags="0">
+        <Key time="37" value="1,0,0,0"/>
+       </Track>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Disable"/>
+        <Key time="37" event="Enable"/>
+        <Key time="44" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="429678060" Type="1" Name="cine_0_dust_pfx1" Pos="2288.8179,3918.7898,189.29962" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4EA26B0B199C5DEC">
+       <Track ParamId="1" Flags="0"/>
+       <Track ParamId="2" Flags="0"/>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Disable"/>
+        <Key time="37" event="Enable"/>
+        <Key time="44" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="690565862" Type="1" Name="cine_0_DOF_dummyTrigger" Pos="2274.8867,3906.7947,193.875" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="49E1130F292932E6">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="5" event="Enter"/>
+        <Key time="22" event="Enable"/>
+        <Key time="32" event="Leave"/>
+       </Track>
+      </Node>
+      <Node Id="1450051074" Type="1" Name="cine_0_swirling_fog_pfx1" Pos="2288.5901,3918.7329,184.38" Rotate="0.70710677,0.70710677,0,0" Scale="1,1,1" EntityGUID="49C9865E566E0602">
+       <Track ParamId="1" Flags="0">
+        <Key time="0" value="2288.5901,3918.7329,184.38"/>
+       </Track>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Disable"/>
+        <Key time="4" event="Enable"/>
+        <Key time="44" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-490195414" Type="1" Name="cine_0_FogVolume" Pos="2288.5642,3918.6943,187.28859" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="40E698DBE2C8362A">
+       <Track ParamId="1" Flags="0"/>
+       <Track ParamId="2" Flags="0"/>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="0" event="Show"/>
+        <Key time="5" event="Show"/>
+       </Track>
+      </Node>
+      <Node Id="208270211" Type="1" Name="cine_0_soundmix" Pos="2063.1353,756.48193,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4F6EF4680C69F383">
+       <Track ParamId="7" Flags="0" StartTime="0" EndTime="44">
+        <Key time="7.5" filename="Sounds/cutscenes:00_island_intro:island_intro_radio_noises_1" volume="1" pan="127" duration="6.2350001" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="0"/>
+        <Key time="15" filename="Sounds/cutscenes:00_island_intro:island_intro_radio_noises_2" volume="1" pan="127" duration="5.1900001" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="0"/>
+        <Key time="22.25" filename="Sounds/cutscenes:00_island_intro:island_intro_radio_noises_3" volume="1" pan="127" duration="8.8460007" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="0"/>
+        <Key time="31.200001" filename="Sounds/cutscenes:00_island_intro:island_intro_radio_noises_4" volume="1" pan="127" duration="6.4950004" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="0" LipSync="0"/>
+       </Track>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="44">
+        <Key time="33.599998" event="Play"/>
+       </Track>
+      </Node>
+     </Nodes>
+    </Sequence>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{BEA18F65-FF2B-49AC-BCC8-132F2F7B8CFE}" Name="FG_cine_0" Pos="2065.9238,754.4126,1027.3641" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+    <FlowGraph Description="" Group="Cinematics" enabled="1" MultiPlayer="ServerOnly">
+     <Nodes>
+      <Node Id="1" Class="Start" pos="-1820,40,0" flags="0">
+       <Inputs InGame="1" InEditor="0"/>
+      </Node>
+      <Node Id="3" Class="Animations:PlaySequence" pos="880,40,0" flags="0">
+       <Inputs seq_Sequence_File="cine_0_intro" BreakOnStop="0" BlendPosSpeed="0" BlendRotSpeed="0" PerformBlendOut="0"/>
+      </Node>
+      <Node Id="5" Class="Camera:ViewShake" pos="880,-900,0" flags="0">
+       <Inputs Restrict="0" View="1" GroundOnly="0" Angle="0.05,0.05,0.05" Shift="0.1,0.1,0.1" Duration="130" Frequency="20" Randomness="0.05"/>
+      </Node>
+      <Node Id="7" Class="CrysisFX:ScreenFader" pos="1280,-220,0" flags="0">
+       <Inputs FadeGroup="0" UseCurColor="1" FadeInTime="6" FadeOutTime="6" color_FadeColor="1,1,1" tex_TextureName=""/>
+      </Node>
+      <Node Id="12" Class="CrysisFX:ScreenFader" pos="1440,680,0" flags="0">
+       <Inputs FadeGroup="0" UseCurColor="1" FadeInTime="1.5" FadeOutTime="1.5" color_FadeColor="0,0,0" tex_TextureName=""/>
+      </Node>
+      <Node Id="1703" Class="Mission:SetGameToken" pos="1440,40,0" flags="0">
+       <Inputs gametoken_Token="Cinematics.Island.cine_0_done" Value="true"/>
+      </Node>
+      <Node Id="1712" Class="Mission:SetGameToken" pos="1440,160,0" flags="0">
+       <Inputs gametoken_Token="Cinematics.Island.cine_0_cancelled" Value="true"/>
+      </Node>
+      <Node Id="1831" Name="_______________________________________________________________________________________________________________________________________________________________________________________________" Class="_comment" pos="-1160,-80,0" flags="0"/>
+      <Node Id="1928" Class="entity:MusicEndTheme" pos="-730,430,0" flags="0" EntityGUID="{682DB1A3-0537-47D9-8991-80DF7A270D32}" EntityGUID_64="47D90537682DB1A3">
+       <Inputs entityId="0" Stop="0"/>
+      </Node>
+      <Node Id="2029" Class="Mission:SetGameToken" pos="-1720,-280,0" flags="0">
+       <Inputs gametoken_Token="Cinematics.Island.cine_0_done" Value="false"/>
+      </Node>
+      <Node Id="2030" Class="Mission:SetGameToken" pos="-1720,-360,0" flags="0">
+       <Inputs gametoken_Token="Cinematics.Island.cine_0_cancelled" Value="false"/>
+      </Node>
+      <Node Id="2031" Class="Start" pos="-2000,-360,0" flags="0">
+       <Inputs InGame="1" InEditor="1"/>
+      </Node>
+      <Node Id="2032" Name="set all gt&apos;s to false on start" Class="_comment" pos="-2000,-400,0" flags="0"/>
+      <Node Id="2081" Class="HUD:OverlayMsg" pos="1280,-400,0" flags="0">
+       <Inputs Message="@island.setscene" PosX="400" PosY="400" Color="0.964706,0.964706,0.964706" Timeout="6"/>
+      </Node>
+      <Node Id="2086" Class="entity:AreaTrigger" pos="870,-1620,0" flags="0" EntityGUID="{9F634551-CD2D-4680-A7BC-BB3D1F0D89E2}" EntityGUID_64="4680CD2D9F634551">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2089" Class="Image:DepthOfField" pos="1140,-1080,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="1" Dof_User_FocusDistance="50" Dof_User_FocusRange="150" Dof_User_BlurAmount="0.5"/>
+      </Node>
+      <Node Id="2090" Class="entity:AreaTrigger" pos="870,-1260,0" flags="0" EntityGUID="{4983E7D3-A84B-4113-89D9-450697DEF395}" EntityGUID_64="4113A84B4983E7D3">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2091" Class="Image:DepthOfField" pos="1140,-980,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="0" Dof_User_FocusDistance="0" Dof_User_FocusRange="0" Dof_User_BlurAmount="0"/>
+      </Node>
+      <Node Id="2092" Class="Camera:ViewShake" pos="1860,-1590,0" flags="0">
+       <Inputs Restrict="0" View="1" GroundOnly="0" Angle="0,0,0" Shift="0,0,0" Duration="1" Frequency="20" Randomness="0.005"/>
+      </Node>
+      <Node Id="2095" Class="Interpol:Float" pos="1540,-1590,0" flags="0">
+       <Inputs StartValue="0" EndValue="0.1" Time="4"/>
+      </Node>
+      <Node Id="2098" Class="Interpol:Float" pos="1540,-1410,0" flags="0">
+       <Inputs StartValue="0.1" EndValue="0.005" Time="8.5"/>
+      </Node>
+      <Node Id="2099" Class="Camera:ViewShake" pos="1860,-1410,0" flags="0">
+       <Inputs Restrict="0" View="1" GroundOnly="0" Angle="0,0,0" Shift="0,0,0" Duration="1" Frequency="20" Randomness="0.005"/>
+      </Node>
+      <Node Id="2101" Class="entity:AreaTrigger" pos="870,-1900,0" flags="0" EntityGUID="{7543A8D9-0552-4C00-A2F2-2860ADF0C620}" EntityGUID_64="4C0005527543A8D9">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2102" Class="Image:FilterBlur" pos="1230,-1900,0" flags="0">
+       <Inputs Enabled="0" FilterBlurring_Type="2" FilterBlurring_Amount="0.5"/>
+      </Node>
+      <Node Id="2103" Class="Image:FilterBlur" pos="1230,-1830,0" flags="0">
+       <Inputs Enabled="0" FilterBlurring_Type="1" FilterBlurring_Amount="0"/>
+      </Node>
+      <Node Id="2105" Class="Animations:PlaySequence" pos="-1160,40,0" flags="0">
+       <Inputs seq_Sequence_File="cine_0_blackAudioScreen" BreakOnStop="0" BlendPosSpeed="0" BlendRotSpeed="0" PerformBlendOut="0"/>
+      </Node>
+      <Node Id="2106" Class="Logic:Any" pos="560,40,0" flags="0">
+       <Inputs />
+      </Node>
+      <Node Id="2107" Name="black screen for Audio, garbled message" Class="_comment" pos="-1160,-160,0" flags="0"/>
+      <Node Id="2108" Class="CrysisFX:ScreenFader" pos="-660,-920,0" flags="0">
+       <Inputs FadeGroup="0" UseCurColor="1" FadeInTime="6" FadeOutTime="6" color_FadeColor="0,0,0" tex_TextureName=""/>
+      </Node>
+      <Node Id="2111" Name="message" Class="_comment" pos="1280,-440,0" flags="0"/>
+      <Node Id="2112" Name="cam shake on plae fly by" Class="_comment" pos="870,-1660,0" flags="0"/>
+      <Node Id="2113" Name="depth of feild on plane engine" Class="_comment" pos="870,-1300,0" flags="0"/>
+      <Node Id="2114" Name="heat distortion on engine flying past" Class="_comment" pos="870,-1940,0" flags="0"/>
+      <Node Id="2116" Class="entity:AreaTrigger" pos="880,-580,0" flags="0" EntityGUID="{5FC94364-8C2F-44ED-8F27-FCD608342AF8}" EntityGUID_64="44ED8C2F5FC94364">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2117" Name="experimental noise" Class="_comment" pos="-1120,870,0" flags="0"/>
+      <Node Id="2118" Class="Image:FilterGrain" pos="-420,930,0" flags="0">
+       <Inputs Enabled="1" FilterGrain_Amount="0"/>
+      </Node>
+      <Node Id="2119" Class="Interpol:Float" pos="-1240,930,0" flags="0">
+       <Inputs StartValue="0" EndValue="0.03" Time="5"/>
+      </Node>
+      <Node Id="2121" Class="HUD:OverlayMsg" pos="1280,-580,0" flags="0">
+       <Inputs Message="@island.sevendays" PosX="400" PosY="400" Color="0.964706,0.964706,0.964706" Timeout="4"/>
+      </Node>
+      <Node Id="2122" Class="HUD:OverlayMsg" pos="-720,-300,0" flags="0">
+       <Inputs Message="@island.intro" PosX="400" PosY="400" Color="0.964706,0.964706,0.964706" Timeout="4"/>
+      </Node>
+      <Node Id="2123" Class="entity:AreaTrigger" pos="-1000,-300,0" flags="0" EntityGUID="{5FC94364-8C2F-44ED-8F27-FCD608342AF8}" EntityGUID_64="44ED8C2F5FC94364">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2134" Class="CrysisFX:ScreenFader" pos="-1160,-670,0" flags="0">
+       <Inputs FadeGroup="0" UseCurColor="0" FadeInTime="0" FadeOutTime="0.001" color_FadeColor="0,0,0" tex_TextureName=""/>
+      </Node>
+      <Node Id="2135" Class="entity:AreaTrigger" pos="-1160,-930,0" flags="0" EntityGUID="{D9A9F7B5-D9EC-47A2-94B3-C1616753E26C}" EntityGUID_64="47A2D9ECD9A9F7B5">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2137" Name="hides hud so can show message" Class="_comment" pos="-1160,-510,0" flags="0"/>
+      <Node Id="2143" Class="Logic:Any" pos="-1080,750,0" flags="0" InHideMask="63" OutHideMask="1">
+       <Inputs />
+      </Node>
+      <Node Id="2166" Class="Logic:Any" pos="-590,930,0" flags="0">
+       <Inputs />
+      </Node>
+      <Node Id="2167" Class="Time:Delay" pos="-900,750,0" flags="0">
+       <Inputs delay="0.01"/>
+      </Node>
+      <Node Id="2170" Name="hud interference fx" Class="_comment" pos="-1280,700,0" flags="0"/>
+      <Node Id="2172" Name="_______________________________________________________________________________________________________________________________________________________________________________________________" Class="_comment" pos="880,-80,0" flags="0"/>
+      <Node Id="2173" Name="_______________________________________________________________________________________________________________________________________________________________________________________________" Class="_comment" pos="-1160,-1030,0" flags="0"/>
+      <Node Id="2174" Name="_______________________________________________________________________________________________________________________________________________________________________________________________" Class="_comment" pos="880,-640,0" flags="0"/>
+      <Node Id="2175" Name="fade out" Class="_comment" pos="1160,640,0" flags="0"/>
+      <Node Id="2176" Class="Logic:Any" pos="-1480,40,0" flags="0">
+       <Inputs />
+      </Node>
+      <Node Id="2177" Name="fades out and in" Class="_comment" pos="-1160,-970,0" flags="0"/>
+      <Node Id="2178" Name="fades in with message from white" Class="_comment" pos="1280,-260,0" flags="0"/>
+      <Node Id="2182" Class="Entity:MaterialParam" pos="-660,1560,0" flags="0" EntityGUID="{8C2CBAF5-BCF2-457A-9469-3E67BAF75677}" EntityGUID_64="457ABCF28C2CBAF5">
+       <Inputs entityId="0" Slot="0" SubMtlId="1" ParamFloat="glow" ValueFloat="50" ParamColor="" color_ValueColor="0,0,0"/>
+      </Node>
+      <Node Id="2185" Name="ship glow" Class="_comment" pos="-860,1520,0" flags="0"/>
+      <Node Id="2187" Class="Entity:MaterialParam" pos="-420,1740,0" flags="0" EntityGUID="{8C2CBAF5-BCF2-457A-9469-3E67BAF75677}" EntityGUID_64="457ABCF28C2CBAF5">
+       <Inputs entityId="0" Slot="0" SubMtlId="1" ParamFloat="glow" ValueFloat="50" ParamColor="" color_ValueColor="0,0,0"/>
+      </Node>
+      <Node Id="2188" Class="Interpol:Float" pos="-660,1740,0" flags="0">
+       <Inputs StartValue="0" EndValue="2" Time="6"/>
+      </Node>
+      <Node Id="2189" Class="CrysisFX:ScreenFader" pos="-730,290,0" flags="0">
+       <Inputs FadeGroup="0" UseCurColor="1" FadeInTime="0" FadeOutTime="0" color_FadeColor="1,1,1" tex_TextureName=""/>
+      </Node>
+      <Node Id="2190" Class="HUD:HUDControl" pos="-1160,-470,0" flags="0">
+       <Inputs AlienInterference="0" AlienInterferenceStrength="1" MapNotAvailable="0"/>
+      </Node>
+      <Node Id="2192" Name="fade in from black after 6secs" Class="_comment" pos="-660,-960,0" flags="0"/>
+      <Node Id="2194" Class="Math:SetNumber" pos="-860,1560,0" flags="0">
+       <Inputs in="0"/>
+      </Node>
+      <Node Id="2195" Class="Time:TimeOfDay" pos="-1280,540,0" flags="0">
+       <Inputs Time="4.45" ForceUpdate="1" Speed="0"/>
+      </Node>
+      <Node Id="2196" Class="Logic:Any" pos="1160,950,0" flags="0" InHideMask="63" OutHideMask="1">
+       <Inputs />
+      </Node>
+      <Node Id="2197" Name="hides clouds" Class="_comment" pos="1160,890,0" flags="0"/>
+      <Node Id="2199" Class="entity:Cloud" pos="1390,1020,0" flags="0" EntityGUID="{9A230B11-3EB6-44F1-AC68-B24B7A509F64}" EntityGUID_64="44F13EB69A230B11">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2211" Class="entity:Cloud" pos="1390,1510,0" flags="0" EntityGUID="{5713B74B-C33F-489B-8915-4F346993A4CF}" EntityGUID_64="489BC33F5713B74B">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2218" Class="Logic:Any" pos="920,1110,0" flags="0" InHideMask="63" OutHideMask="1">
+       <Inputs />
+      </Node>
+      <Node Id="2219" Name="shows clouds" Class="_comment" pos="920,1070,0" flags="0"/>
+      <Node Id="2221" Class="CrysisFX:ScreenFader" pos="1440,280,0" flags="0">
+       <Inputs FadeGroup="0" UseCurColor="1" FadeInTime="0" FadeOutTime="0" color_FadeColor="0,0,0" tex_TextureName=""/>
+      </Node>
+      <Node Id="2227" Class="entity:AreaTrigger" pos="-1120,1560,0" flags="0" EntityGUID="{0C6EDB10-59DB-47C6-842D-C45654CA14FA}" EntityGUID_64="47C659DB0C6EDB10">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2228" Class="Interpol:Float" pos="-660,-660,0" flags="0">
+       <Inputs StartValue="0" EndValue="-1" Time="1"/>
+      </Node>
+      <Node Id="2229" Class="Image:ColorCorrection" pos="-430,-660,0" flags="0">
+       <Inputs Enabled="0" Global_User_ColorC="0" Global_User_ColorM="0" Global_User_ColorY="0" Global_User_ColorK="-1" Global_User_Brightness="1" Global_User_Contrast="1" Global_User_Saturation="1" Global_User_ColorHue="0"/>
+      </Node>
+      <Node Id="2231" Name="blows out to white when door opens" Class="_comment" pos="-660,-700,0" flags="0"/>
+      <Node Id="2233" Class="Interpol:Float" pos="-810,1070,0" flags="0">
+       <Inputs StartValue="0.03" EndValue="0" Time="1"/>
+      </Node>
+      <Node Id="2234" Class="entity:AreaTrigger" pos="-990,1070,0" flags="0" EntityGUID="{D9A9F7B5-D9EC-47A2-94B3-C1616753E26C}" EntityGUID_64="47A2D9ECD9A9F7B5">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2235" Name="fades out noise" Class="_comment" pos="-990,1030,0" flags="0"/>
+      <Node Id="2237" Class="entity:AreaTrigger" pos="-1217.3654,-1640.9991,0" flags="0" EntityGUID="{292932E6-130F-49E1-BA11-546832C4DBB9}" EntityGUID_64="49E1130F292932E6">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2238" Class="Image:DepthOfField" pos="-730,130,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="0" Dof_User_FocusDistance="0" Dof_User_FocusRange="0" Dof_User_BlurAmount="0"/>
+      </Node>
+      <Node Id="2239" Class="Image:DepthOfField" pos="-950,-1760,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="1" Dof_User_FocusDistance="2" Dof_User_FocusRange="5" Dof_User_BlurAmount="0.5"/>
+      </Node>
+      <Node Id="2240" Class="Image:DepthOfField" pos="-960,-1620,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="1" Dof_User_FocusDistance="6" Dof_User_FocusRange="6" Dof_User_BlurAmount="0.5"/>
+      </Node>
+      <Node Id="2241" Class="Image:DepthOfField" pos="-950,-1470,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="1" Dof_User_FocusDistance="12" Dof_User_FocusRange="24" Dof_User_BlurAmount="0.75"/>
+      </Node>
+      <Node Id="2242" Class="Image:DepthOfField" pos="1140,-1210,0" flags="0">
+       <Inputs Enabled="0" Dof_User_Active="1" Dof_User_FocusDistance="10" Dof_User_FocusRange="250" Dof_User_BlurAmount="0.5"/>
+      </Node>
+      <Node Id="2243" Name="plane engines" Class="_comment" pos="1140,-1240,0" flags="0"/>
+      <Node Id="2244" Name="mid plane" Class="_comment" pos="1150,-1110,0" flags="0"/>
+      <Node Id="2257" Class="entity:Cloud" pos="1390,1710,0" flags="0" EntityGUID="{97870D4F-4217-4774-9C0A-9AE2D117A408}" EntityGUID_64="4774421797870D4F">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2260" Class="Mission:SetGameToken" pos="-1720,-200,0" flags="0">
+       <Inputs gametoken_Token="Cinematics.Island.cine_0_started" Value="false"/>
+      </Node>
+      <Node Id="2261" Class="Mission:SetGameToken" pos="-700,0,0" flags="0">
+       <Inputs gametoken_Token="Cinematics.Island.cine_0_started" Value="true"/>
+      </Node>
+      <Node Id="2264" Class="Math:ToBoolean" pos="-740,750,0" flags="0">
+       <Inputs />
+      </Node>
+      <Node Id="2267" Class="Math:SetNumber" pos="-900,880,0" flags="0">
+       <Inputs in="0"/>
+      </Node>
+      <Node Id="2268" Class="Image:ColorCorrection" pos="930,-360,0" flags="0">
+       <Inputs Enabled="0" Global_User_ColorC="0" Global_User_ColorM="0" Global_User_ColorY="0" Global_User_ColorK="0" Global_User_Brightness="1" Global_User_Contrast="1" Global_User_Saturation="1" Global_User_ColorHue="0"/>
+      </Node>
+      <Node Id="2270" Class="Math:Div" pos="1730,-1310,0" flags="0">
+       <Inputs A="0" B="16"/>
+      </Node>
+      <Node Id="2271" Class="Math:Div" pos="1730,-1490,0" flags="0">
+       <Inputs A="0" B="16"/>
+      </Node>
+      <Node Id="2274" Class="entity:MusicEndTheme" pos="1440,580,0" flags="0" EntityGUID="{682DB1A3-0537-47D9-8991-80DF7A270D32}" EntityGUID_64="47D90537682DB1A3">
+       <Inputs entityId="0" Stop="0"/>
+      </Node>
+      <Node Id="2276" Class="entity:SoundEventSpot" pos="1440,440,0" flags="0" EntityGUID="{BB0AC37A-F009-4F6B-9006-A20ABA68A4F4}" EntityGUID_64="4F6BF009BB0AC37A">
+       <Inputs entityId="0" Enable="0" Once="0" Play="0" SoundName="" Stop="0"/>
+      </Node>
+      <Node Id="2278" Class="entity:SoundEventSpot" pos="-730,490,0" flags="0" EntityGUID="{0C69F383-F468-4F6E-A776-4E5739E4E3AB}" EntityGUID_64="4F6EF4680C69F383">
+       <Inputs entityId="0" Enable="0" Once="0" Play="0" SoundName="" Stop="0"/>
+      </Node>
+      <Node Id="2279" Name="initial instant black on start" Class="_comment" pos="-1160,-710,0" flags="0"/>
+      <Node Id="2280" Name="resets" Class="_comment" pos="930,-400,0" flags="0"/>
+      <Node Id="2283" Class="entity:AreaTrigger" pos="1160,680,0" flags="0" EntityGUID="{DC0E8A56-15B8-4173-9B1D-B631A2067F46}" EntityGUID_64="417315B8DC0E8A56">
+       <Inputs entityId="0" Disable="0" Enable="0" Enter="0" Leave="0"/>
+      </Node>
+      <Node Id="2285" Class="Time:Delay" pos="790,-360,0" flags="0">
+       <Inputs delay="0.01"/>
+      </Node>
+      <Node Id="2286" Name="set fade white after scene" Class="_comment" pos="-730,260,0" flags="0"/>
+      <Node Id="2287" Name="instant black on skip" Class="_comment" pos="1440,250,0" flags="0"/>
+      <Node Id="2288" Name="fades to black at end" Class="_comment" pos="1440,640,0" flags="0"/>
+      <Node Id="2289" Name="message" Class="_comment" pos="1280,-610,0" flags="0"/>
+      <Node Id="2290" Class="Entity:MaterialParam" pos="-660,1410,0" flags="0" EntityGUID="{8C2CBAF5-BCF2-457A-9469-3E67BAF75677}" EntityGUID_64="457ABCF28C2CBAF5">
+       <Inputs entityId="0" Slot="0" SubMtlId="2" ParamFloat="glow" ValueFloat="0" ParamColor="" color_ValueColor="0,0,0"/>
+      </Node>
+      <Node Id="2292" Class="entity:VolumeObject" pos="1390,1090,0" flags="0" EntityGUID="{000CD49D-F84A-401E-9EF5-D4C3CFDD30F9}" EntityGUID_64="401EF84A000CD49D">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2296" Class="entity:VolumeObject" pos="1390,1160,0" flags="0" EntityGUID="{9A0EB003-0646-4768-AE11-D4F86282627D}" EntityGUID_64="476806469A0EB003">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2298" Class="entity:VolumeObject" pos="1390,1230,0" flags="0" EntityGUID="{9BD7BAE6-4629-4E8D-B2FC-F1C72F643307}" EntityGUID_64="4E8D46299BD7BAE6">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2300" Class="entity:VolumeObject" pos="1390,1300,0" flags="0" EntityGUID="{9E1F3407-6544-45A7-B726-092BA868BC45}" EntityGUID_64="45A765449E1F3407">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2302" Class="entity:VolumeObject" pos="1390,1370,0" flags="0" EntityGUID="{8B247116-E958-4F99-A339-B0998BFED155}" EntityGUID_64="4F99E9588B247116">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2304" Class="entity:VolumeObject" pos="1390,1440,0" flags="0" EntityGUID="{4C412383-6EC0-43E6-B7FF-B7A2B267B917}" EntityGUID_64="43E66EC04C412383">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2306" Class="entity:VolumeObject" pos="1390,1580,0" flags="0" EntityGUID="{86BC5BF7-27C6-4058-8ABE-BC99124BB832}" EntityGUID_64="405827C686BC5BF7">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2308" Class="entity:VolumeObject" pos="1390,1650,0" flags="0" EntityGUID="{8FACB516-A6FC-4468-A08C-8F0EEC764D4C}" EntityGUID_64="4468A6FC8FACB516">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2310" Class="entity:VolumeObject" pos="1390,950,0" flags="0" EntityGUID="{F365F77A-C940-4E68-B702-285BA833C1A2}" EntityGUID_64="4E68C940F365F77A">
+       <Inputs entityId="0" Hide="0" Show="0"/>
+      </Node>
+      <Node Id="2311" Class="Camera:ViewShake" pos="1860,-1740,0" flags="0">
+       <Inputs Restrict="0" View="1" GroundOnly="0" Angle="0,0,0" Shift="0,0,0" Duration="1" Frequency="20" Randomness="0.005"/>
+      </Node>
+      <Node Id="2312" Class="Interpol:Float" pos="1540,-1740,0" flags="0">
+       <Inputs StartValue="0.005" EndValue="0.075" Time="1.6"/>
+      </Node>
+      <Node Id="2313" Class="Math:Div" pos="1730,-1650,0" flags="0">
+       <Inputs A="0" B="16"/>
+      </Node>
+      <Node Id="2314" Class="Logic:Any" pos="1420,-1340,0" flags="0" InHideMask="63" OutHideMask="1">
+       <Inputs />
+      </Node>
+      <Node Id="2315" Name="stops cam shake on skip" Class="_comment" pos="1310,-1380,0" flags="0"/>
+     </Nodes>
+     <Edges>
+      <Edge nodeIn="2176" nodeOut="1" portIn="in1" portOut="output" enabled="1"/>
+      <Edge nodeIn="1703" nodeOut="3" portIn="Trigger" portOut="Done" enabled="1"/>
+      <Edge nodeIn="1712" nodeOut="3" portIn="Trigger" portOut="Aborted" enabled="1"/>
+      <Edge nodeIn="2081" nodeOut="3" portIn="Hide" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2121" nodeOut="3" portIn="Hide" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2196" nodeOut="3" portIn="in1" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2221" nodeOut="3" portIn="FadeOut" portOut="Aborted" enabled="1"/>
+      <Edge nodeIn="2274" nodeOut="3" portIn="Stop" portOut="Aborted" enabled="1"/>
+      <Edge nodeIn="2276" nodeOut="3" portIn="Play" portOut="Aborted" enabled="1"/>
+      <Edge nodeIn="2314" nodeOut="3" portIn="in1" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2029" nodeOut="2031" portIn="Trigger" portOut="output" enabled="1"/>
+      <Edge nodeIn="2030" nodeOut="2031" portIn="Trigger" portOut="output" enabled="1"/>
+      <Edge nodeIn="2260" nodeOut="2031" portIn="Trigger" portOut="output" enabled="1"/>
+      <Edge nodeIn="2095" nodeOut="2086" portIn="Start" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2098" nodeOut="2086" portIn="Start" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2312" nodeOut="2086" portIn="Start" portOut="Enable" enabled="1"/>
+      <Edge nodeIn="2089" nodeOut="2090" portIn="Enabled" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2091" nodeOut="2090" portIn="Enabled" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2242" nodeOut="2090" portIn="Enabled" portOut="Enable" enabled="1"/>
+      <Edge nodeIn="2092" nodeOut="2095" portIn="Angle" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2092" nodeOut="2095" portIn="Trigger" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2271" nodeOut="2095" portIn="A" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2099" nodeOut="2098" portIn="Angle" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2099" nodeOut="2098" portIn="Trigger" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2270" nodeOut="2098" portIn="A" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2102" nodeOut="2101" portIn="Enabled" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2103" nodeOut="2101" portIn="Enabled" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="1928" nodeOut="2105" portIn="Stop" portOut="Aborted" enabled="1"/>
+      <Edge nodeIn="2106" nodeOut="2105" portIn="in1" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2122" nodeOut="2105" portIn="Hide" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2143" nodeOut="2105" portIn="in1" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2189" nodeOut="2105" portIn="FadeOut" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2228" nodeOut="2105" portIn="Stop" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2238" nodeOut="2105" portIn="Enabled" portOut="Done" enabled="1"/>
+      <Edge nodeIn="2261" nodeOut="2105" portIn="Trigger" portOut="Started" enabled="1"/>
+      <Edge nodeIn="3" nodeOut="2106" portIn="Trigger" portOut="out" enabled="1"/>
+      <Edge nodeIn="5" nodeOut="2106" portIn="Trigger" portOut="out" enabled="0"/>
+      <Edge nodeIn="2218" nodeOut="2106" portIn="in1" portOut="out" enabled="1"/>
+      <Edge nodeIn="2285" nodeOut="2106" portIn="in" portOut="out" enabled="1"/>
+      <Edge nodeIn="7" nodeOut="2116" portIn="FadeIn" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2081" nodeOut="2116" portIn="Show" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2121" nodeOut="2116" portIn="Show" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2166" nodeOut="2119" portIn="in2" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2122" nodeOut="2123" portIn="Show" portOut="Enable" enabled="1"/>
+      <Edge nodeIn="2108" nodeOut="2135" portIn="FadeIn" portOut="Enable" enabled="1"/>
+      <Edge nodeIn="2134" nodeOut="2135" portIn="FadeOut" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2228" nodeOut="2135" portIn="Start" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2119" nodeOut="2143" portIn="Stop" portOut="out" enabled="1"/>
+      <Edge nodeIn="2167" nodeOut="2143" portIn="in" portOut="out" enabled="1"/>
+      <Edge nodeIn="2267" nodeOut="2143" portIn="set" portOut="out" enabled="1"/>
+      <Edge nodeIn="2118" nodeOut="2166" portIn="FilterGrain_Amount" portOut="out" enabled="1"/>
+      <Edge nodeIn="2264" nodeOut="2167" portIn="false" portOut="out" enabled="1"/>
+      <Edge nodeIn="2105" nodeOut="2176" portIn="Trigger" portOut="out" enabled="1"/>
+      <Edge nodeIn="2119" nodeOut="2176" portIn="Start" portOut="out" enabled="1"/>
+      <Edge nodeIn="2190" nodeOut="2176" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2195" nodeOut="2176" portIn="Set" portOut="out" enabled="0"/>
+      <Edge nodeIn="2264" nodeOut="2176" portIn="true" portOut="out" enabled="1"/>
+      <Edge nodeIn="2187" nodeOut="2188" portIn="ValueFloat" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2182" nodeOut="2194" portIn="ValueFloat" portOut="out" enabled="1"/>
+      <Edge nodeIn="2290" nodeOut="2194" portIn="ValueFloat" portOut="out" enabled="1"/>
+      <Edge nodeIn="2199" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2211" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2257" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2292" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2296" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2298" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2300" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2302" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2304" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2306" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2308" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2310" nodeOut="2196" portIn="Hide" portOut="out" enabled="1"/>
+      <Edge nodeIn="2199" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2211" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2257" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2292" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2296" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2298" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2300" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2302" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2304" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2306" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2308" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2310" nodeOut="2218" portIn="Show" portOut="out" enabled="1"/>
+      <Edge nodeIn="2188" nodeOut="2227" portIn="Start" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2194" nodeOut="2227" portIn="set" portOut="Enable" enabled="1"/>
+      <Edge nodeIn="2229" nodeOut="2228" portIn="Enabled" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2229" nodeOut="2228" portIn="Global_User_ColorK" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2166" nodeOut="2233" portIn="in3" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2233" nodeOut="2234" portIn="Start" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2239" nodeOut="2237" portIn="Enabled" portOut="Enable" enabled="1"/>
+      <Edge nodeIn="2240" nodeOut="2237" portIn="Enabled" portOut="Enter" enabled="1"/>
+      <Edge nodeIn="2241" nodeOut="2237" portIn="Enabled" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2118" nodeOut="2264" portIn="Enabled" portOut="out" enabled="1"/>
+      <Edge nodeIn="2166" nodeOut="2267" portIn="in1" portOut="out" enabled="1"/>
+      <Edge nodeIn="2099" nodeOut="2270" portIn="Shift" portOut="out" enabled="1"/>
+      <Edge nodeIn="2092" nodeOut="2271" portIn="Shift" portOut="out" enabled="1"/>
+      <Edge nodeIn="12" nodeOut="2283" portIn="FadeOut" portOut="Leave" enabled="1"/>
+      <Edge nodeIn="2268" nodeOut="2285" portIn="Enabled" portOut="out" enabled="1"/>
+      <Edge nodeIn="2311" nodeOut="2312" portIn="Angle" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2311" nodeOut="2312" portIn="Trigger" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2313" nodeOut="2312" portIn="A" portOut="Value" enabled="1"/>
+      <Edge nodeIn="2311" nodeOut="2313" portIn="Shift" portOut="out" enabled="1"/>
+      <Edge nodeIn="2095" nodeOut="2314" portIn="Stop" portOut="out" enabled="1"/>
+      <Edge nodeIn="2098" nodeOut="2314" portIn="Stop" portOut="out" enabled="1"/>
+      <Edge nodeIn="2312" nodeOut="2314" portIn="Stop" portOut="out" enabled="1"/>
+     </Edges>
+    </FlowGraph>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Name="cine_0_c17_aniObj" Parent="{ECD61BB4-5B25-4401-B227-0E5B38BD435D}" Pos="15.000136,-4.4698086,18.720123" Rotate="0.70441592,-0.061628405,0.061628431,-0.70441622" ColorRGB="65535" Material="Objects/Vehicles/US_Cargoplane/us_cargoplane_island_intro" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="1" RecvWind="0" EntityClass="AnimObject">
+    <Properties ActivatePhysicsDist="50" ActivatePhysicsThreshold="0" bAutoGenAIHidePts="0" bCanShatter="1" bFreezable="0" object_Model="objects/vehicles/us_cargoplane/us_cargoplane.cga" object_ModelFrozen="" bNoFriendlyFire="0" bPickable="0" soclasses_SmartObjectClass="" bUsable="0" UseText="">
+     <Animation bAlwaysUpdate="0" Animation="" bLoop="0" bPhysicalizeAfterAnimation="0" playerAnimationState="" bPlaying="0" Speed="1"/>
+     <Physics bArticulated="0" Density="-1" Mass="-1" bPhysicalize="0" bPushableByPlayers="0" bRigidBody="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{3897D76A-47DF-4B6B-A146-9F0035622845}" Name="cine_0_c17_exhaust_pfx6" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="23.583618,10.166504,4.5030518" Rotate="0.70090926,0,0,-0.71325046" Scale="1.2499998,1.2499998,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="3" ParticleEffect="misc.contrails.c17" bPrime="1" PulsePeriod="0" Scale="2" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{A3E4C979-8431-4CD0-8C08-9EBD3C9C46C4}" Name="cine_0_caveLight_fill" Pos="2288.04,3908.6411,189.7084" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="1" Radius="12">
+     <Color clrDiffuse="0.0235294,0.290196,1" fDiffuseMultiplier="0.35" fHDRDynamic="0.35" fSpecularMultiplier="0.5"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{8DA1EB7C-E059-4599-B4E4-599C39FAD741}" Name="cine_0_c17_exhaust_pfx8" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="21.296265,-19.682373,4.5029297" Rotate="0.70090926,-3.6779753e-011,-4.2145247e-009,-0.71325046" Scale="1.2499998,1.2499998,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="3" ParticleEffect="misc.contrails.c17" bPrime="1" PulsePeriod="0" Scale="2" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Brush" Layer="cine_0_intro" Id="{B06C3782-4499-4FDF-AA60-0DC288B49EF6}" Name="ice_spike_small3" Pos="2291.1001,3921.54,180.37" ColorRGB="16777215" MatLayersMask="0" Prefab="objects/library/alien/generic_elements/spikes/spike_d_breakable.cgf" OutdoorOnly="0" CastShadowMaps="0" SupportSecondVisarea="0" CastRAMmap="0" ReceiveRAMmap="0" Hideable="0" LodRatio="100" ViewDistRatio="100" NotTriangulate="0" AIRadius="-1" NoStaticDecals="0" RAMmapQuality="1" NoAmnbShadowCaster="0" RecvWind="0" RndFlags="0"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{0C69F383-F468-4F6E-A776-4E5739E4E3AB}" Name="cine_0_soundmix" Pos="2063.1353,756.48193,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="SoundEventSpot">
+    <Properties bEnabled="1" bIgnoreCulling="1" bIgnoreObstruction="1" soundName="Sounds/cutscenes:00_island_intro:island_intro_alien_open_b" bOnce="0" bPlay="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{FC2D2A85-5084-45DB-AA57-739BB5882D5F}" Name="cine_0_korean_SES" Pos="2064.6714,756.42017,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="SoundEventSpot">
+    <Properties bEnabled="1" bIgnoreCulling="0" bIgnoreObstruction="0" soundName="" bOnce="0" bPlay="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{9C56C385-5262-44BD-A5F8-53F09FB0460A}" Name="cine_0_tail_light5" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="7.8375244,-32.693848,5.3585205" Rotate="0.62585616,0.02165864,0.019523302,0.77939332" ColorRGB="65535" Material="Materials/lightbeams/lightflare_runway" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1">
+     <Color clrDiffuse="0.976471,0,0" fDiffuseMultiplier="1" fHDRDynamic="0.5" fSpecularMultiplier="1"/>
+     <Options bAffectsThisAreaOnly="0" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="0.5" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{FB78AE8F-2E74-420A-86BE-676E2309AF49}" Name="cine_0_c17_exhaust_pfx1" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-2.2838135,17.932129,4.7159424" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499998,1.2499998,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="1" ParticleEffect="vehicle_fx.US_fighter.c17_thrusters" bPrime="1" PulsePeriod="0" Scale="1.25" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="GeomEntity" Layer="cine_0_intro" Id="{BD2B419A-A85C-4989-8482-8A31486B6E57}" Name="cine_0_cave_back" Pos="2287.875,3938.2825,189.0625" Rotate="0.70710683,0.70710677,0,0" Scale="10,10,10" ColorRGB="65535" Material="objects/library/props/household/kitchen/cups" MatLayersMask="1" Geometry="Objects\box.cgf" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="GeomEntity"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{56C61AA5-6C20-4266-B83A-6699D5DFA979}" Name="cine_0_tail_light7" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-0.0045166016,0.14599609,0.84405518" Rotate="0.62585616,0.02165864,0.019523302,0.77939332" ColorRGB="65535" Material="Materials/lightbeams/lightflare_runway" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1">
+     <Color clrDiffuse="0.976471,0,0" fDiffuseMultiplier="3" fHDRDynamic="0.5" fSpecularMultiplier="3"/>
+     <Options bAffectsThisAreaOnly="0" bCastShadow="0" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="2" fCoronaDistSizeFactor="0.5" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Camera" Layer="cine_0_intro" Id="{ECD61BB4-5B25-4401-B227-0E5B38BD435D}" Name="cine_0_intro_cam" Pos="1529.8101,-2994.1499,1285.4301" Rotate="0.98449796,-0.020020643,0.0035427911,-0.17421372" ColorRGB="16776960" FOV="0.872665" EntityClass="CameraSource"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{D9A9F7B5-D9EC-47A2-94B3-C1616753E26C}" Name="cine_0_fade_dummyTrigger" Pos="2064.2263,754.43671,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{3C6D2AC2-4674-45B4-A03C-5BAB7069B1B3}" Name="cine_1_alienShip_light" Pos="2288.25,3937.374,189.0625" ColorRGB="65535" Material="Materials/lightbeams/lightbeam_alien" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="10">
+     <Color clrDiffuse="1,1,1" fDiffuseMultiplier="5" fHDRDynamic="5" fSpecularMultiplier="1"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="90" fProjectorNearPlane="0" texture_Texture=""/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="SequenceObject" Layer="cine_0_intro" Id="{49ED20CE-4B5A-4318-9FC6-985CFC1B3430}" Name="cine_0_intro" ColorRGB="16744319">
+    <Sequence Name="cine_0_intro" Flags="360" StartTime="0" EndTime="52">
+     <Nodes>
+      <Node Id="0" Type="2" Name="Scene">
+       <Track ParamId="6" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" node="cine_0_intro_cam"/>
+       </Track>
+       <Track ParamId="7" Flags="0" StartTime="0" EndTime="52">
+        <Key time="26.200001" filename="languages/dialog/island/pilot_island_ab1_00001.mp2" volume="1" pan="127" duration="6.3470001" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+        <Key time="36.299992" filename="languages/dialog/island/pilot_1_island_ab1_00001.mp2" volume="1" pan="127" duration="3.6830001" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+        <Key time="42.200005" filename="languages/dialog/island/pilot_island_ab1_00002.mp2" volume="1" pan="127" duration="3.8920002" desc="" InRadius="0" OutRadius="0" Stream="0" Is3D="0" Loop="0" Voice="1" LipSync="0"/>
+       </Track>
+      </Node>
+      <Node Id="-75977073" Type="1" Name="cine_0_c17_exhaust_pfx1" Pos="-2.2838135,17.932129,4.7159424" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499998,1.2499998,1.25" EntityGUID="420A2E74FB78AE8F">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="2087933799" Type="1" Name="cine_0_c17_aniObj" Pos="15.000136,-4.4698086,18.720123" Rotate="0.70441592,-0.061628405,0.061628431,-0.70441622" Scale="0.99999988,0.99999994,1" EntityGUID="479EA66B7C735767">
+       <Track ParamId="1" Flags="0">
+        <Key time="18.4" value="15.000136,-4.4698086,18.720123"/>
+        <Key time="19.6" value="9.1301365,-3.5198097,0.00012207031"/>
+        <Key time="22.000004" value="16.210136,1.720192,-3.1998749"/>
+        <Key time="24" value="17.980137,5.180191,-2.8998718"/>
+        <Key time="26" value="19.910137,11.940189,-1.0898743"/>
+        <Key time="28.5" value="18.700138,18.07019,-1.9198608"/>
+        <Key time="32" value="4.1223574,26.915199,2.4101257"/>
+        <Key time="34" value="-6.0298638,33.730186,0.33013916"/>
+        <Key time="35.5" value="-10.379864,42.420189,-3.0198669"/>
+        <Key time="37.5" value="-10.82986,50.360191,-8.6699991"/>
+        <Key time="39.5" value="-12.23,58.980003,-11.330003"/>
+        <Key time="41.5" value="-10.2,65.87999,-11.000001"/>
+        <Key time="43.5" value="-8.04,72.599991,-8.9700022"/>
+        <Key time="46.5" value="-6.6999998,76.479996,-6.3099985"/>
+        <Key time="49" value="-19.5,90,-6.4700022"/>
+        <Key time="51" value="-46.27,125.7,-4.3999939"/>
+       </Track>
+       <Track ParamId="2" Flags="0">
+        <Key time="18.4" value="0.70441592,-0.061628405,0.061628431,-0.70441622"/>
+        <Key time="19.6" value="0.70441604,-0.061628416,0.061628416,-0.70441604"/>
+        <Key time="22.000004" value="0.70710576,0.00098732021,0.021470636,-0.70678121"/>
+        <Key time="24" value="0.7062459,0.03108855,-0.0064251963,-0.70725471"/>
+        <Key time="26" value="0.69877982,0.069435969,-0.035206441,-0.71108794"/>
+        <Key time="28.5" value="0.70404565,0.071786948,-0.026776023,-0.70600957"/>
+        <Key time="32" value="0.70154595,0.070553251,-0.015750963,-0.70894802"/>
+        <Key time="34" value="0.70105445,-0.027760455,0.07161396,-0.7089594"/>
+        <Key time="35.5" value="0.71262562,-0.0022523738,0.043213069,-0.70020878"/>
+        <Key time="37.500008" value="0.72927088,-0.020597775,0.031859633,-0.68317264"/>
+        <Key time="39.5" value="0.736184,-0.021863641,0.027658511,-0.67586255"/>
+        <Key time="41.5" value="0.72949123,-0.0011286996,0.025456212,-0.68351549"/>
+        <Key time="43.5" value="0.73533618,0.015345094,0.0037794271,-0.67751813"/>
+        <Key time="46.5" value="0.73778343,0.033946492,-0.014573359,-0.67402589"/>
+        <Key time="49" value="0.76692235,0.11850089,-0.079495907,-0.62567395"/>
+        <Key time="51" value="0.81574237,0.15041909,-0.087489285,-0.55161959" tens="1"/>
+       </Track>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="UnHide"/>
+        <Key time="52" event="Hide"/>
+       </Track>
+       <Track ParamId="10" Flags="0" StartTime="0" EndTime="52">
+        <Key time="20.000004" anim="cargoplane_rotor" length="0.66666669" speed="2" loop="1"/>
+       </Track>
+      </Node>
+      <Node Id="-1620884143" Type="1" Name="cine_0_cameraShake_dummyTrigger" Pos="2067.2146,754.5155,1027.2361" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4680CD2D9F634551">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="19.4" event="Enter"/>
+        <Key time="23.999996" event="Leave"/>
+        <Key time="34" event="Enable"/>
+       </Track>
+      </Node>
+      <Node Id="1233381331" Type="1" Name="cine_0_DOF_dummyTrigger" Pos="2066.1675,755.89081,1027.2361" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4113A84B4983E7D3">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="6" event="Leave"/>
+        <Key time="18" event="Leave"/>
+        <Key time="23" event="Enable"/>
+        <Key time="28" event="Enter"/>
+        <Key time="40"/>
+       </Track>
+      </Node>
+      <Node Id="1967368409" Type="1" Name="cine_0_heatBlur_dummyTrigger" Pos="2063.3589,755.42017,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4C0005527543A8D9">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="31.999996"/>
+        <Key time="32.999996"/>
+       </Track>
+      </Node>
+      <Node Id="-1613074863" Type="1" Name="cine_0_c17_exhaust_pfx2" Pos="-6.9633789,9.6789551,5.2030029" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499999,1.2499999,1.25" EntityGUID="48C109EE9FDA6E51">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="1518226677" Type="1" Name="cine_0_c17_exhaust_pfx3" Pos="-6.9556885,-9.7590332,5.2169189" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499999,1.2499999,1.25" EntityGUID="4E8AAF785A7E4CF5">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-1686091531" Type="1" Name="cine_0_c17_exhaust_pfx4" Pos="-2.7276611,-17.973145,4.69104" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499998,1.2499998,1.25" EntityGUID="420E4F439B8048F5">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="501139780" Type="1" Name="cine_0_c17_exhaust_pfx5" Pos="19.809692,18.287598,4.5030518" Rotate="0.70090926,0,0,-0.71325046" Scale="1.2499998,1.2499998,1.25" EntityGUID="44B39C5F1DDEC944">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="949475178" Type="1" Name="cine_0_c17_exhaust_pfx6" Pos="23.583618,10.166504,4.5030518" Rotate="0.70090926,0,0,-0.71325046" Scale="1.2499998,1.2499998,1.25" EntityGUID="4B6B47DF3897D76A">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="1839610360" Type="1" Name="cine_0_c17_exhaust_pfx7" Pos="24.468353,-9.7770996,4.5032959" Rotate="0.70090926,-5.3141309e-009,-7.3110549e-009,-0.71325052" Scale="1.2499998,1.2499998,1.25" EntityGUID="465D0F856DA639F8">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-1918768260" Type="1" Name="cine_0_c17_exhaust_pfx8" Pos="21.296265,-19.682373,4.5029297" Rotate="0.70090926,-3.6779753e-011,-4.2145247e-009,-0.71325046" Scale="1.2499998,1.2499998,1.25" EntityGUID="4599E0598DA1EB7C">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="1607025508" Type="1" Name="cine_0_Msg_dummyTrigger" Pos="2065.3381,755.11865,1026.6584" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="44ED8C2F5FC94364">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0.49999988" event="Enter"/>
+        <Key time="6.499999" event="Leave"/>
+       </Track>
+      </Node>
+      <Node Id="-321512524" Type="3" Name="cine_0_intro_cam" Pos="1529.8101,-2994.1499,1285.4301" Rotate="0.98449796,-0.020020643,0.0035427911,-0.17421372" Scale="1,1,0.99999994" EntityGUID="44015B25ECD61BB4" FOV="50">
+       <Track ParamId="1" Flags="0">
+        <Key time="0" value="1529.8101,-2994.1499,1285.4301" tens="1"/>
+        <Key time="6" value="1529.8101,-2994.1499,1285.4301" tens="1"/>
+        <Key time="12" value="1609.45,-2687.8701,1257.343"/>
+        <Key time="24" value="1783.1295,-2208.7751,1209.886"/>
+        <Key time="32" value="1892.2195,-1907.8202,1152.1959"/>
+        <Key time="39" value="2024.6895,-1561.7703,984.61096"/>
+        <Key time="45" value="2174.3499,-1156.4602,957.30597"/>
+        <Key time="52" value="2326.9102,-708.19025,940.98969"/>
+       </Track>
+       <Track ParamId="2" Flags="0">
+        <Key time="0" value="0.98449796,-0.020020643,0.0035427911,-0.17421372"/>
+        <Key time="6" value="0.98474538,-0.01896259,0.0020012003,-0.17295371"/>
+        <Key time="12" value="0.98349124,-0.03279718,0.012220293,-0.17753866"/>
+        <Key time="18" value="0.98511612,-0.037267428,0.0061665578,-0.16768794"/>
+        <Key time="24" value="0.98551881,-0.050335016,0.0082593821,-0.16171201"/>
+        <Key time="35.299999" value="0.99015427,-0.050571769,0.0066578998,-0.13035628"/>
+        <Key time="39" value="0.98269922,-0.064409509,0.011357136,-0.17327641"/>
+        <Key time="45" value="0.98403567,-0.046908285,0.0081744976,-0.1714835"/>
+        <Key time="52" value="0.98100013,-0.032024611,0.0062431241,-0.19124372"/>
+       </Track>
+       <Track ParamId="0" Flags="0">
+        <Key time="39" value="50"/>
+       </Track>
+      </Node>
+      <Node Id="-603129069" Type="1" Name="cine_0_c17_moonLight" Pos="14.927979,28.787109,-15.311707" Rotate="0.60757625,-0.28834021,-0.16709091,-0.7209658" Scale="1.2500001,1.2500001,1.2499999" EntityGUID="44D2FB83DC0CFB13">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="525591053" Type="1" Name="cine_0_c17_engineLight1" Pos="-2.3022461,-18.042236,4.7729492" Rotate="1,1.5210052e-016,1.1920929e-008,3.7066631e-008" Scale="1.2500001,1.2500001,1.2499999" EntityGUID="4AA584451F53E20D">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Disable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="1520500031" Type="1" Name="cine_0_c17_engineLight2" Pos="-6.6279297,-9.8093262,5.1800537" Rotate="1,3.9968021e-017,0,1.3411043e-008" Scale="1.2500001,1.2500001,1.2499999" EntityGUID="4A8B6F425AA0FD3F">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Disable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-1886592169" Type="1" Name="cine_0_c17_engineLight3" Pos="-6.6107178,9.6931152,5.2557373" Rotate="1,-2.9802323e-009,-2.9802323e-009,1.2479722e-008" Scale="1.2500001,1.2500001,1.2499999" EntityGUID="441D00008F8CE357">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Disable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="-1578304039" Type="1" Name="cine_0_c17_engineLight4" Pos="-2.1048584,18.00415,4.7288818" Rotate="1,-8.9406971e-009,-5.9604646e-009,1.2665986e-008" Scale="1.2500001,1.2500001,1.2499999" EntityGUID="456F5941A1ECFDD9">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="0" event="Disable"/>
+        <Key time="18" event="Disable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="575298650" Type="1" Name="cine_0_tail_light1" Pos="29.139526,-1.4189453,8.7998047" Rotate="0.49631333,0.51257527,-0.45997849,0.52854466" Scale="1,1,1" EntityGUID="421C6FA8224A5C5A">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="-1.937151e-007" event="Disable"/>
+        <Key time="18" event="Disable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="1771068979" Type="1" Name="cine_0_tail_light2" Pos="28.524292,1.6296387,8.7049561" Rotate="0.54167533,-0.45451942,-0.45451945,-0.54167521" Scale="1,1,1" EntityGUID="45D2534C69905E33">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="-1.937151e-007" event="Disable"/>
+        <Key time="18" event="Enable"/>
+        <Key time="52" event="Disable"/>
+       </Track>
+      </Node>
+      <Node Id="1999442952" Type="1" Name="cine_0_tail_light" Pos="35.827637,0.061279297,7.8442993" Rotate="0.62585616,0.021658644,0.0195233,0.77939332" Scale="1,1,1" EntityGUID="42F01231772D1408">
+       <Track ParamId="1" Flags="0"/>
+       <Track ParamId="2" Flags="0"/>
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52"/>
+      </Node>
+      <Node Id="-1755252528" Type="1" Name="cine_0_c17_SES" Pos="1937.0952,-1842.2196,1151.0586" Rotate="0.83956456,0.0012914049,-0.043522179,-0.54151225" Scale="1.2499999,1.2499999,1.25" EntityGUID="4CB33D979760F8D0">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="16.15" event="Play"/>
+        <Key time="52" event="Stop"/>
+       </Track>
+      </Node>
+      <Node Id="-1156922502" Type="1" Name="c17_interior_ambience" Pos="1040.4087,1462.8279,1027.1357" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="4F6BF009BB0AC37A">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="45.599998" event="Play"/>
+       </Track>
+      </Node>
+      <Node Id="-2016354556" Type="1" Name="trigger_music_intro_c17_exterior" Pos="-471.56104,2759.9351,0" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="474F86F287D0DF04">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="14.7" event="Enter"/>
+       </Track>
+      </Node>
+      <Node Id="-2126253316" Type="1" Name="cine_0_skywind_SES" Pos="1949.5361,-1840.2428,1151.8994" Rotate="0.83956456,0.0012914027,-0.043522179,-0.54151225" Scale="1.2499999,1.2499999,1.25" EntityGUID="4EE480438143F2FC">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="1.4999999" event="Play"/>
+        <Key time="52" event="Stop"/>
+       </Track>
+      </Node>
+      <Node Id="-603026858" Type="1" Name="cine_0_fade_dummyTrigger_2" Pos="2062.7449,754.4231,1026.7761" Rotate="1,0,0,0" Scale="1,1,1" EntityGUID="417315B8DC0E8A56">
+       <Track ParamId="4" Flags="0" StartTime="0" EndTime="52">
+        <Key time="48.499996" event="Leave"/>
+       </Track>
+      </Node>
+     </Nodes>
+    </Sequence>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{D8DF81D0-C112-44D8-9677-88FFD6E20A10}" Name="cine_0_volume_light" Pos="2288.25,3928.6201,189.0625" Rotate="0.70710677,0,0,-0.70710677" ColorRGB="65535" Material="Materials/lightbeams/lightbeam_alien" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="13">
+     <Color clrDiffuse="0.321569,0.988235,0.988235" fDiffuseMultiplier="1" fHDRDynamic="0.75" fSpecularMultiplier="1"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="100" fProjectorNearPlane="0" texture_Texture="textures/lights/sun_big_sparkle2.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{9760F8D0-3D97-4CB3-8B5D-57EA6FD93A10}" Name="cine_0_c17_SES" Pos="1937.0952,-1842.2196,1151.0586" Rotate="0.83956456,0.0012914049,-0.043522179,-0.54151225" Scale="1.2499999,1.2499999,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="SoundEventSpot">
+    <Properties bEnabled="1" bIgnoreCulling="1" bIgnoreObstruction="1" soundName="Sounds/cutscenes:00_island_intro:island_intro_plane" bOnce="0" bPlay="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{4983E7D3-A84B-4113-89D9-450697DEF395}" Name="cine_0_DOF_dummyTrigger" Pos="2066.1675,755.89081,1027.2361" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{7543A8D9-0552-4C00-A2F2-2860ADF0C620}" Name="cine_0_heatBlur_dummyTrigger" Pos="2063.3589,755.42017,1026.7761" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{A1ECFDD9-5941-456F-9790-2141211AEDFD}" Name="cine_0_c17_engineLight4" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-2.1048584,18.00415,4.7288818" Rotate="1,-8.9406971e-009,-5.9604646e-009,1.2665986e-008" Scale="1.2500001,1.2500001,1.2499999" ColorRGB="65535" Material="Materials/lightbeams/lightbeam_alien" MatLayersMask="0" OutdoorOnly="0" ViewDistRatio="100" HiddenInGame="0" EntityClass="Light">
+    <Properties bActive="0" Radius="1.5">
+     <Color clrDiffuse="1,0.611765,0.192157" fDiffuseMultiplier="2" fHDRDynamic="4.5" fSpecularMultiplier="0"/>
+     <Options bAffectsThisAreaOnly="1" bCastShadow="1" bFakeLight="0" object_RenderGeometry="" bUsedInRealTime="1"/>
+     <Projector bProjectInAllDirs="0" fProjectorFov="60" fProjectorNearPlane="0" texture_Texture="textures/lights/alien_ringlight.dds"/>
+     <Style fCoronaDistIntensityFactor="1" fCoronaDistSizeFactor="1" fCoronaScale="1" nLightStyle="0"/>
+     <Test bFillLight="0" bNegativeLight="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{292932E6-130F-49E1-BA11-546832C4DBB9}" Name="cine_0_DOF_dummyTrigger" Pos="2274.8867,3906.7947,193.875" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AreaTrigger">
+    <Properties bEnabled="1" bInVehicleOnly="0" bOnlyLocalPlayer="0" bOnlyPlayers="0" ScriptCommand="" species="-1" bTriggerOnce="0"/>
+   </Object>
+   <Object Type="VisArea" Layer="cine_0_intro" Id="{453BDEEB-24F5-4995-9DB8-F8CEC4C12556}" Name="cine_0_cave_visArea" Pos="2122.625,4003.75,102.1875" ColorRGB="33023" Height="250" DisplayFilled="0" AmbientColor="0.0235294,0.027451,0.101961" AffectedBySun="0" IgnoreSkyColor ="0" ViewDistRatio="100" SkyOnly="0" MergeBrushes="0" OceanIsVisible="0" EntityClass="AreaShape">
+    <Points>
+     <Point Pos="0,0,0"/>
+     <Point Pos="303.28125,94,0"/>
+     <Point Pos="315.78125,-210.875,0"/>
+     <Point Pos="31.78125,-277.28125,0"/>
+    </Points>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{199C5DEC-6B0B-4EA2-A5F4-B3F945792926}" Name="cine_0_dust_pfx1" Pos="2288.8179,3918.7898,189.29962" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="0" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="0.15" ParticleEffect="misc.fog.dust_in_light_beams" bPrime="1" PulsePeriod="0" Scale="3" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Camera" Layer="cine_0_intro" Id="{D4C129EF-2C3F-4226-B144-186F046CE193}" Name="cine_0_blackRadio_cam" Pos="2288.5,3907.6201,189.48" ColorRGB="16776960" FOV="1.0472" EntityClass="CameraSource"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{9B8048F5-4F43-420E-9D93-CDA1A0E67B61}" Name="cine_0_c17_exhaust_pfx4" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-2.7276611,-17.973145,4.69104" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499998,1.2499998,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="1" ParticleEffect="vehicle_fx.US_fighter.c17_thrusters" bPrime="1" PulsePeriod="0" Scale="1.25" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{5A7E4CF5-AF78-4E8A-8500-2641F0BE87DD}" Name="cine_0_c17_exhaust_pfx3" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="-6.9556885,-9.7590332,5.2169189" Rotate="0.70710683,2.107343e-009,2.1073427e-009,-0.70710671" Scale="1.2499999,1.2499999,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="1" ParticleEffect="vehicle_fx.US_fighter.c17_thrusters" bPrime="1" PulsePeriod="0" Scale="1.25" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{8C2CBAF5-BCF2-457A-9469-3E67BAF75677}" Name="cine_1_caveDoor_aniObj" Pos="2288.24,3938.75,263.07001" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="AnimObject">
+    <Properties ActivatePhysicsDist="50" ActivatePhysicsThreshold="0" bAutoGenAIHidePts="0" bCanShatter="1" bFreezable="1" object_Model="objects/library/alien/ship_exterior/ship_hull/ship_hull_part_mine.cga" object_ModelFrozen="" bNoFriendlyFire="0" bPickable="0" soclasses_SmartObjectClass="" bUsable="0" UseText="">
+     <Animation bAlwaysUpdate="0" Animation="hull_part_mine_cine0Option2" bLoop="0" bPhysicalizeAfterAnimation="0" playerAnimationState="" bPlaying="0" Speed="1"/>
+     <Physics bArticulated="0" Density="-1" Mass="-1" bPhysicalize="0" bPushableByPlayers="0" bRigidBody="0"/>
+    </Properties>
+   </Object>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{6DA639F8-0F85-465D-B991-622626BC93CB}" Name="cine_0_c17_exhaust_pfx7" Parent="{7C735767-A66B-479E-B4EC-551EDDD1D39F}" Pos="24.468353,-9.7770996,4.5032959" Rotate="0.70090926,-5.3141309e-009,-7.3110549e-009,-0.71325052" Scale="1.2499998,1.2499998,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="ParticleEffect">
+    <Properties bActive="0" AttachForm="Surface" AttachType="" bCountPerUnit="0" CountScale="3" ParticleEffect="misc.contrails.c17" bPrime="1" PulsePeriod="0" Scale="2" soclasses_SmartObjectClass="" SpeedScale="1"/>
+   </Object>
+   <Object Type="Brush" Layer="cine_0_intro" Id="{FC7CA5F9-2924-430A-8591-6CA20185055D}" Name="ice_spike_small6" Pos="2291.78,3918.3401,179.64999" Rotate="0.99993956,0,-0.010995353,0" ColorRGB="16777215" MatLayersMask="0" Prefab="objects/library/alien/generic_elements/spikes/spike_a_breakable.cgf" OutdoorOnly="0" CastShadowMaps="0" SupportSecondVisarea="0" CastRAMmap="0" ReceiveRAMmap="0" Hideable="0" LodRatio="100" ViewDistRatio="100" NotTriangulate="0" AIRadius="-1" NoStaticDecals="0" RAMmapQuality="1" NoAmnbShadowCaster="0" RecvWind="0" RndFlags="0"/>
+   <Object Type="Entity" Layer="cine_0_intro" Id="{8143F2FC-8043-4EE4-AD4F-0F44404D746E}" Name="cine_0_skywind_SES" Pos="1949.5361,-1840.2428,1151.8994" Rotate="0.83956456,0.0012914027,-0.043522179,-0.54151225" Scale="1.2499999,1.2499999,1.25" ColorRGB="65535" MatLayersMask="0" OutdoorOnly="0" CastShadow="1" MotionBlurMultiplier="1" LodRatio="100" ViewDistRatio="100" HiddenInGame="0" RecvWind="0" EntityClass="SoundEventSpot">
+    <Properties bEnabled="1" bIgnoreCulling="1" bIgnoreObstruction="1" soundName="Sounds/cutscenes:00_island_intro:island_intro_skywind" bOnce="0" bPlay="0"/>
+   </Object>
+  </LayerObjects>
+ </Layer>
+</ObjectLayer>

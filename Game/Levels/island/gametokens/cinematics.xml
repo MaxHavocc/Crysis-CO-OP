@@ -1,0 +1,123 @@
+<GameTokensLibrary Name="Cinematics">
+ <GameToken Name="Tutorial.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Island.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Island.cine_3_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Island.cine_6_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Village.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Village.cine_2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Rescue.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Rescue.cine_2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Harbor.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Tank.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Mine.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Mine.cine_3_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Core.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Ice.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Sphere.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Fleet.cine_1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Fleet.cine_4_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Fleet.cine_7_p1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Fleet.cine_9_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Tutorial.scene_2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Fleet.scene_6_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Core.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Fleet.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Fleet.cine_4_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Fleet.cine_7_p1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Fleet.cine_9_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Fleet.scene_6_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Harbor.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Ice.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Island.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Island.cine_3_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Island.cine_6_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Mine.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Mine.cine_3_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Rescue.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Rescue.cine_2_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Sphere.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Tank.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Tutorial.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Tutorial.scene_2_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Village.cine_1_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Village.cine_2_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Harbor.cine_2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Harbor.cine_2_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Harbor.cine_1.05_done" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Harbor.cine_1.05_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Harbor.cine_2_vtol1_landed" Type="Bool" Value="false" Description="checks if vtol1 has landed"/>
+ <GameToken Name="Harbor.cine_2_vtol1_evaced" Type="Bool" Value="false" Description="checks if vtol1 has cleared the tank with stricland enough"/>
+ <GameToken Name="Ice.cine_2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Ice.cine_2_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Sphere.cine_2_p1_vtolcrashed_done" Type="Bool" Value="false" Description="has the vtol crashed with heklena inside"/>
+ <GameToken Name="Sphere.cine_2_p2_vtolrescued_done" Type="Bool" Value="false" Description="has player rescued helena"/>
+ <GameToken Name="Sphere.cine_3_p1_meet_strickland_done" Type="Bool" Value="false" Description="has player meet stricklnad"/>
+ <GameToken Name="Sphere.cine_3_p2_scoutswarm_done" Type="Bool" Value="false"/>
+ <GameToken Name="Sphere.cine_3_p3_vtolArrived_done" Type="Bool" Value="false" Description="has the players evac vtol arrived"/>
+ <GameToken Name="Sphere.cine_3_p3_vtolEvac_done" Type="Bool" Value="false" Description="has the player evaced the camp"/>
+ <GameToken Name="Sphere.cine_1_p1_done" Type="Bool" Value="false"/>
+ <GameToken Name="Sphere.cine_1_p2_done" Type="Bool" Value="false"/>
+ <GameToken Name="Sphere.cine_1_p3_done" Type="Bool" Value="false"/>
+ <GameToken Name="Sphere.cine_1_p4_done" Type="Bool" Value="false"/>
+ <GameToken Name="Fleet.cine_7_p2_done" Type="Bool" Value="false"/>
+ <GameToken Name="Fleet.cine_7_p2_cancelled" Type="Bool" Value="false"/>
+ <GameToken Name="Sphere.cine_2_p3_vtolPlayerInside" Type="Bool" Value="false" Description="checks if player is inside vtol"/>
+ <GameToken Name="Mine.cine_4_p1_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Mine.cine_4_p2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Mine.cine_4_p3_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Mine.cine_4_liftPlayerInside" Type="Bool" Value="false" Description="is player in lift?"/>
+ <GameToken Name="Mine.cine_4_liftPlayerInRange" Type="Bool" Value="false" Description="is player close enough 2 lift to talk to helena"/>
+ <GameToken Name="Ascension.cine_1_levelStart_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Ascension.cine_1_levelStart_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Fleet.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Fleet.cine_4_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Fleet.scene_6_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Fleet.cine_7_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Fleet.cine_9_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Fleet.cine_10_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Harbor.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Harbor.cine_2_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Harbor.cine_1-05_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Ice.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Ice.cine_2_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Island.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Island.cine_3_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Island.cine_6_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Mine.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Mine.cine_3_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Mine.cine_4_p1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Rescue.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Rescue.cine_2_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Sphere.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Sphere.cine_2_p1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Sphere.cine_3_p1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Tutorial.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Tutorial.scene_2_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Village.cine_1_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Village.cine_2_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Harbor.cine_2_tankReadyToFire" Type="Bool" Value="false" Description="is tank ready to fire"/>
+ <GameToken Name="Harbor.cine_2_tankTunnelBlocked" Type="Bool" Value="false"/>
+ <GameToken Name="Village.cine_2_prophetMusic_started" Type="Bool" Value="false" Description="has music for prophet radio line begun"/>
+ <GameToken Name="Mine.cine_4_liftDoorClosed" Type="Bool" Value="false" Description="is the lift door closed with the player inside"/>
+ <GameToken Name="Rescue.cine_3_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Rescue.cine_3_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Rescue.cine_3_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Island.cine_0_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Island.cine_0_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Island.cine_0_started" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Island.cine_0_trigger" Type="Bool" Value="false" Description="coop intro start trigger"/>
+ <GameToken Name="Fleet.cine_10_done" Type="Bool" Value="false" Description="did cinematic start?"/>
+ <GameToken Name="Ice.cine_3_done" Type="Bool" Value="false"/>
+ <GameToken Name="Ice.cine_3_cancelled" Type="Bool" Value="false"/>
+ <GameToken Name="Ice.cine_3_started" Type="Bool" Value="false"/>
+ <GameToken Name="Sphere.cine_2_BarnesAnimStarted" Type="Bool" Value="false"/>
+ <GameToken Name="Fleet.cine_9_trooper_dead" Type="Bool" Value="false" Description="is morrison trooper killed"/>
+ <GameToken Name="Fleet.cine_6_playerInRoom" Type="Bool" Value="false"/>
+ <GameToken Name="Fleet.cine_6_pre_done" Type="Bool" Value="false"/>
+ <GameToken Name="Core.cine_2_done" Type="Bool" Value="false" Description="is cinematic done?"/>
+ <GameToken Name="Core.cine_2_cancelled" Type="Bool" Value="false" Description="was cinematic cancelled by player (spacebar)?"/>
+ <GameToken Name="Core.cine_1_started" Type="Bool" Value="false" Description="has cinematic started"/>
+ <GameToken Name="Core.cine_2_started" Type="Bool" Value="false" Description="has cinematic started"/>
+ <GameToken Name="Fleet.cine_10_playerInPos" Type="Bool" Value="false" Description="is player in pos for final cine to start"/>
+ <GameToken Name="Harbor.cine_1_playerfree" Type="Bool" Value="false"/>
+</GameTokensLibrary>

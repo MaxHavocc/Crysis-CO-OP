@@ -1,0 +1,13 @@
+{
+    "callsign": "Psycho",
+    "last_host_ip": "26.196.29.208",
+    "difficulty": 2,
+    "mission": "island",
+    "loadout": {
+        "primary1": "SCAR",
+        "primary2": "AY69",
+        "secondary": "SOCOM",
+        "explosive": "Frag Grenade",
+        "heavy": "None"
+    }
+}

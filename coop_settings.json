@@ -1,0 +1,13 @@
+{
+    "difficulty": 3,
+    "enemy_multiplier": 2.0,
+    "ammo_multiplier": 999,
+    "disable_drowning": true,
+    "enable_all_attachments": true,
+    "game": "warhead",
+    "mission_code": "ambush",
+    "mission_title": "Call Me Ishmael",
+    "mission_mode": "new_game",
+    "loadout": [],
+    "mission": "ambush"
+}

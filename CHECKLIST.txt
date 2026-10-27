@@ -1,0 +1,66 @@
+================================================================================
+CRYSIS CO-OP MULTIPLAYER PROJECT: STATUS & TASK CHECKLIST
+================================================================================
+
+[X] = COMPLETED & VERIFIED IN ENGINE
+[ ] = OPEN / IN PROGRESS
+
+--------------------------------------------------------------------------------
+1. LAUNCHER & LOBBY ROOM SYSTEM
+--------------------------------------------------------------------------------
+[X] Simplified 2-option landing menu: HOST CO-OP and JOIN CO-OP.
+[X] Lobby Room with real-time peer roster and live status indicators.
+[X] 5-slot tactical loadout architecture (Primary 1, Primary 2, Secondary, Explosives, Launcher).
+[X] Entire slot cards clickable with hover highlight and cursor cues.
+[X] Per-slot weapon picker modal with real-time slot restrictions.
+[X] "No Duplicates" rule strictly enforced across all 5 slots.
+[X] Loadout persistence saved in user_profile.json across launcher restarts.
+[X] Real-time TCP signaling: peer loadout changes update live on all screens.
+[X] Host mission control: "New Game: Crysis 1", "New Game: Warhead", and Campaign Mission Selector.
+[X] Campaign selector supporting all 11 Crysis 1 missions and 7 Warhead missions.
+[X] Persistent game settings: Difficulty, AI multiplier, Ammo pool, Infinite O2, Attachments.
+[X] Removed all user-facing "tactical" terminology from headers, titles, and descriptions.
+[X] Dedicated standalone launcher for Crysis Warhead (executes Warhead without mod flags).
+[X] Host prevention from joining own lobby in LAN browser.
+
+--------------------------------------------------------------------------------
+2. WEAPON & WARHEAD INTEGRATION
+--------------------------------------------------------------------------------
+[X] Warhead GameData archive linked into Crysis Game root for shared asset definitions.
+[X] Warhead weapons (AY69, FGL40, Claymore) selectable in loadout slots.
+[X] Warhead weapons fully functional inside Crysis 1 Co-op campaign maps.
+[X] Custom ammo pool distribution in Coop.lua for all standard and Warhead weapons:
+    - ay69bullet, fgl40fraggrenade, fgl40empgrenade, claymoreexplosive, avexplosive.
+[X] 15 custom weapon card icons rendered and integrated into the launcher UI.
+[X] Gauss Rifle and TAC Gun excluded from initial beach loadouts by design.
+
+--------------------------------------------------------------------------------
+3. C++ GAME ENGINE (CrysisCoop.dll)
+--------------------------------------------------------------------------------
+[X] HUD.cpp: Cinematic input suppression (blocks Tab and M during cutscenes).
+[X] HUD.cpp: Team flag set to "US" in Co-op, resolving the North Korean flag bug.
+[X] CoopPlayer.cpp: Isolated per-player AI threat/stealth detection levels.
+[X] CoopGrunt.cpp: Duplicate equipment pack check & second SOCOM pistol stripping.
+[X] FlashMenuObject.cpp: Unblocked menu music fadeout upon Co-op level connect.
+[X] Player.cpp: Underwater breathing hook (coop_disable_o2) for infinite O2.
+[X] Automated MSBuild script (v143 Profile Win32) with binary verification.
+
+--------------------------------------------------------------------------------
+4. SCRIPT & AI NETWORKING (LUA)
+--------------------------------------------------------------------------------
+[X] player.lua: Player initialized with species 0, groupid 0, and perception parameters.
+[X] player.lua: AI immediately targets both host and client without waiting to be shot.
+[X] Coop.lua: ai_UpdateAllAlways = 1 enforced so distant AI never sleep.
+[X] MusicThemeSelector.lua: ClSetMusicTheme network broadcast across all clients.
+[X] Coop.lua: Level music synchronization lookup table (resolving Mission 5 music bug).
+[X] Coop.lua: Custom loadout spawner reading coop_loadout CVar on beach drop.
+
+--------------------------------------------------------------------------------
+5. OPEN BACKLOG & NEXT MILESTONES
+--------------------------------------------------------------------------------
+[ ] Level 1 Halo Jump Sequence: Resolve camera, look-around, and scout hit timing.
+[ ] Beach Suit Reboot: Ensure client reboot sequence triggers in sync with host.
+[ ] Mid-Mission Cutscene Network Barriers: Sync interactive flowgraphs across missions.
+[ ] Objective String Localization: Fix occasional @objective_id display bugs.
+[ ] Git Repository: Push codebase to GitHub for team pull-request workflow.
+================================================================================

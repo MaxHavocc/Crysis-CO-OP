@@ -1,3 +1,4 @@
+# Build output & intermediates
 *.obj
 *.tlog
 *.lastcodeanalysissucceeded
@@ -5,9 +6,19 @@
 *.idb
 *.pdb
 *.log
-.aider*
+Profile/
+Debug/
+Release/
+Bin32/CrysisCoop.pdb
+
+# Python & editor caches
 __pycache__/
 *.pyc
+.aider*
 *.tmp
+
+# Local configs generated on launch
 host.cfg
 client.cfg
+autoexec.cfg
+*.bak*
