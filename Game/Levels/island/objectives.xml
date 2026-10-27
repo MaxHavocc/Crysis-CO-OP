@@ -1,6 +1,6 @@
 <Root>
   <Testmap>
-    <Objective_01 Name="Kill Captain Korea" Description="Captain Korea master of all has a nanosuit, fuck him up." />
+    <Objective_01 Name="Kill Captain Korea" Description="Captain Korea master of all has a nanosuit, defeat him." />
   </Testmap>
   
   <ShoreCoop>
@@ -9,19 +9,19 @@
 	<Objective_03 Name="Download Navigational Charts" Description="Download the navigational charts to allow Three Marines to make their way to the Island" MapLabel="Navigation Charts" Secondary="true"/>
   </ShoreCoop>
   <Island>
-	<Objective_01 Description="@Island_Goal_Rescue_Hostages_01_Text" Name="@Island_Goal_Rescue_Hostages_01"/>
-	<Objective_02 Description="" Name="@Island_Task_Land_At_LZ" MapLabel="@Island_Task_Land_At_LZ_Loc"/>
-	<Objective_03 Description="" Name="@Island_Task_Get_To_Beach" MapLabel="@Island_Task_Get_To_Beach_Loc"/>
-	<Objective_04 Description="" Name="@Island_Task_Meet_Jester" MapLabel="@Island_Task_Meet_Jester_Loc"/>
-	<Objective_05 Description="" Name="@Island_Task_Aid_Aztec" MapLabel="@Island_Task_Aid_Aztec_Loc"/>
-	<Objective_06 Description="" Name="@Island_Task_Rendezvous_At_LZ" MapLabel="@Island_Task_Rendezvous_At_LZ_Loc"/>
-	<Objective_07 Description="@Island_Task_Disable_Jammer_Text" Name="@Island_Task_Disable_Jammer" Secondary="true" MapLabel="@Island_Task_Disable_Jammer_Loc"/>
-	<Objective_08 Description="" Name="@Island_Task_Retrieve_Data" Secondary="true" MapLabel="@Island_Task_Retrieve_Data_Loc"/>
-	<Objective_09 Description="" Name="@Island_Task_Investigate_Command_Post" Secondary="true" MapLabel="@Island_Task_Investigate_Command_Post_Loc"/>
-	<Objective_9a Description="" Name="@Island_Task_Break_KPA_Checkpoint" MapLabel="@Island_Task_Break_KPA_Checkpoint_Loc"/>
-	<Objective_10 Description="" Name="@Island_Task_Rendezvous_At_Signal_Location" MapLabel="@Island_Task_Rendezvous_At_Signal_Location_Loc"> </Objective_10>
-	<Objective_11 Description="@Island_Goal_Locate_Excavation_Site_Text" Name="@Island_Goal_Locate_Excavation_Site"/>
-	<Objective_12 Description="@Island_Task_Find_Jester_Text" Name="@Island_Task_Find_Jester" MapLabel="@Island_Task_Find_Jester_Loc"/>
+	<Objective_01 Description="The North Koreans have illegally occupied an island in the Philippine Sea. Dr. Rosenthal and a team of four U.S. archaeologists are being held by the KPA. Extract all five hostages." Name="Locate and extract civilian hostages."/>
+	<Objective_02 Description="Land safely at the Landing Zone." Name="Land at the LZ." MapLabel="Landing Zone"/>
+	<Objective_03 Description="Reach the beach shore." Name="Get to the beach." MapLabel="Beach"/>
+	<Objective_04 Description="Rendezvous with squadmate Jester." Name="Rendezvous with Jester." MapLabel="Jester"/>
+	<Objective_05 Description="Locate and assist squadmate Aztec." Name="Assist Aztec." MapLabel="Aztec"/>
+	<Objective_06 Description="Rendezvous at the secondary Landing Zone." Name="Rendezvous at the Landing Zone." MapLabel="Landing Zone"/>
+	<Objective_07 Description="Our tactical display is down. A GPS jammer is blocking our communication." Name="Secondary: Disable GPS Jammer" Secondary="true" MapLabel="Jamming device"/>
+	<Objective_08 Description="Access North Korean tactical network to gather intelligence." Name="Secondary: Access Tactical Network" Secondary="true" MapLabel="Access Point"/>
+	<Objective_09 Description="Investigate the North Korean command post." Name="Secondary: Investigate Command Post" Secondary="true" MapLabel="Command Post"/>
+	<Objective_9a Description="Break through the fortified KPA check point." Name="Break through the KPA check point." MapLabel="KPA Checkpoint"/>
+	<Objective_10 Description="Rendezvous at the distress signal coordinates." Name="Rendezvous at the distress signal." MapLabel="Signal Location"/>
+	<Objective_11 Description="We suspect the hostages are being held at an excavation site. Find the site and rescue the civilian research team." Name="Locate and extract civilian hostages."/>
+	<Objective_12 Description="Search the area and find Jester." Name="Find Jester." MapLabel="Jester"/>
 	<Objective_90 Description="" Name=""/>
   </Island>
 </Root>

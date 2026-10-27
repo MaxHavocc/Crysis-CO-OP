@@ -1,13 +1,13 @@
 {
-    "difficulty": 3,
-    "enemy_multiplier": 2.0,
-    "ammo_multiplier": 999,
+    "difficulty": 2,
+    "enemy_multiplier": 1.0,
+    "ammo_multiplier": 1,
     "disable_drowning": true,
     "enable_all_attachments": true,
-    "game": "warhead",
-    "mission_code": "ambush",
-    "mission_title": "Call Me Ishmael",
+    "game": "crysis",
+    "mission_code": "island",
+    "mission_title": "Contact",
     "mission_mode": "new_game",
     "loadout": [],
-    "mission": "ambush"
+    "mission": "island"
 }

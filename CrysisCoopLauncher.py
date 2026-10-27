@@ -201,6 +201,12 @@ def load_settings():
                 defaults.update(d)
         except Exception:
             pass
+    # Safety: Validate Crysis 1 map codes
+    crysis_codes = [m[1] for m in CRYSIS_MISSIONS]
+    if defaults.get("game") == "crysis" and defaults.get("mission_code") not in crysis_codes:
+        defaults["mission_code"] = "island"
+        defaults["mission_title"] = "Contact"
+        defaults["mission_mode"] = "new_game"
     return defaults
 
 def save_settings(data):
@@ -518,6 +524,7 @@ class CrysisCoopLauncher(tk.Tk):
             self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server_sock.bind((bind_ip, DEFAULT_PORT))
             self.server_sock.listen(5)
+            self.host_bind_ip = bind_ip
             self.is_host = True
             self.is_connected = True
             self.is_ready = True
@@ -622,32 +629,64 @@ class CrysisCoopLauncher(tk.Tk):
         def worker():
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            s.settimeout(1.5)
+            s.settimeout(1.2)
             query = json.dumps({"type": "DISCOVER"}).encode("utf-8")
 
-            # Broadcast on local subnet & 255.255.255.255
-            for bcast in ["255.255.255.255", "127.0.0.1"]:
+            # Multi-interface broadcast targets (LAN, Radmin VPN, direct peers)
+            targets = {"255.255.255.255", "26.255.255.255", "127.0.0.1", "26.70.173.250", "26.196.29.208"}
+            last_ip = self.profile.get("last_host_ip")
+            if last_ip:
+                targets.add(last_ip)
+            for ip in get_network_ips():
+                parts = ip.split(".")
+                if len(parts) == 4:
+                    targets.add(f"{parts[0]}.{parts[1]}.{parts[2]}.255")
+
+            for bcast in targets:
                 try:
                     s.sendto(query, (bcast, DISCOVERY_PORT))
                 except Exception:
                     pass
 
             discovered = []
+            seen_ips = set()
             start = time.time()
-            my_ips = get_network_ips()
-            while time.time() - start < 1.5:
+            my_ips = set(get_network_ips())
+            while time.time() - start < 1.2:
                 try:
                     data, addr = s.recvfrom(2048)
                     pkt = json.loads(data.decode("utf-8"))
                     if pkt.get("type") == "LOBBY_ANNOUNCE":
-                        h_ip = pkt.get("host_ip", addr[0])
-                        # Filter out self
-                        if h_ip in my_ips:
+                        h_ip = pkt.get("host_ip") or addr[0]
+                        if h_ip in my_ips or h_ip in seen_ips:
                             continue
+                        seen_ips.add(h_ip)
+                        pkt["host_ip"] = h_ip
                         discovered.append(pkt)
                 except Exception:
                     pass
             s.close()
+
+            # HTTP bridge fallback discovery
+            for bridge_url in ["http://26.70.173.250:9000/lobby/list", "http://127.0.0.1:9000/lobby/list"]:
+                try:
+                    import urllib.request
+                    req = urllib.request.Request(bridge_url, headers={"User-Agent": "CrysisLauncher"})
+                    with urllib.request.urlopen(req, timeout=0.6) as resp:
+                        lobbies = json.loads(resp.read().decode("utf-8"))
+                        for lb in lobbies:
+                            h_ip = lb.get("host_ip")
+                            if h_ip and h_ip not in my_ips and h_ip not in seen_ips:
+                                seen_ips.add(h_ip)
+                                discovered.append({
+                                    "lobby_name": lb.get("name") or lb.get("lobby_name", "Crysis Squad"),
+                                    "host_ip": h_ip,
+                                    "game_title": lb.get("game_title", "Crysis 1"),
+                                    "mission_title": lb.get("mission_title", "Contact"),
+                                    "player_count": lb.get("player_count", 1)
+                                })
+                except Exception:
+                    pass
 
             def update_ui():
                 for p in discovered:
@@ -1006,25 +1045,26 @@ class CrysisCoopLauncher(tk.Tk):
             missions = CRYSIS_MISSIONS if game_type == "crysis" else WARHEAD_MISSIONS
             accent = CrysisTheme.CYAN_ACCENT if game_type == "crysis" else CrysisTheme.WARHEAD_ACCENT
 
+            def make_mission_selector(g, c, t):
+                return lambda: (self.set_lobby_mission(g, c, t, "mission_select"), modal.destroy())
+
             for title, code, desc in missions:
                 row = tk.Frame(scroll_frame, bg=CrysisTheme.BG_PANEL, bd=1, relief="solid",
                                highlightbackground=CrysisTheme.BORDER)
                 row.pack(fill="x", pady=4, padx=4)
 
-                tk.Label(row, text=title, font=(CrysisTheme.FONT_TITLE, 11, "bold"),
-                         fg=CrysisTheme.TEXT_MAIN, bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=12, pady=(6, 2))
-                tk.Label(row, text=f"{code}  •  {desc}", font=(CrysisTheme.FONT_UI, 8),
-                         fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=12, pady=(0, 6))
-
-                def pick_mission(c=code, t=title, g=game_type):
-                    self.set_lobby_mission(g, c, t, "mission_select")
-                    modal.destroy()
-
                 btn = tk.Button(row, text="SELECT", font=(CrysisTheme.FONT_UI, 8, "bold"),
                                 fg=accent, bg=CrysisTheme.BG_INPUT,
-                                bd=1, relief="solid", padx=12, pady=4, cursor="hand2",
-                                command=pick_mission)
-                btn.place(relx=0.96, rely=0.5, anchor="e")
+                                bd=1, relief="solid", padx=14, pady=6, cursor="hand2",
+                                command=make_mission_selector(game_type, code, title))
+                btn.pack(side="right", padx=12, pady=8)
+
+                info_col = tk.Frame(row, bg=CrysisTheme.BG_PANEL)
+                info_col.pack(side="left", fill="both", expand=True, padx=12, pady=6)
+                tk.Label(info_col, text=title, font=(CrysisTheme.FONT_TITLE, 11, "bold"),
+                         fg=CrysisTheme.TEXT_MAIN, bg=CrysisTheme.BG_PANEL).pack(anchor="w")
+                tk.Label(info_col, text=f"{code}  •  {desc}", font=(CrysisTheme.FONT_UI, 8),
+                         fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL).pack(anchor="w")
 
         btn_tab_c1 = tk.Button(top_tabs, text="CRYSIS 1 CAMPAIGN (11 Missions)",
                                font=(CrysisTheme.FONT_UI, 10, "bold"),
@@ -1157,6 +1197,18 @@ class CrysisCoopLauncher(tk.Tk):
         status_color = CrysisTheme.GREEN_ACCENT if ready else CrysisTheme.AMBER_ACCENT
         tk.Label(header, text=status_text, font=(CrysisTheme.FONT_MONO, 9, "bold"),
                  fg=status_color, bg=CrysisTheme.BG_CARD).pack(side="right", padx=16)
+
+        # Show slots ONLY if Host selected New Game
+        is_new_game = (self.settings.get("mission_mode", "new_game") == "new_game")
+        if not is_new_game:
+            info_row = tk.Frame(card, bg=CrysisTheme.BG_CARD, bd=1, relief="solid",
+                                highlightbackground=CrysisTheme.BORDER)
+            info_row.pack(fill="x", padx=12, pady=10)
+            tk.Label(info_row, text="STANDARD MISSION LOADOUT", font=(CrysisTheme.FONT_TITLE, 9, "bold"),
+                     fg=CrysisTheme.AMBER_ACCENT, bg=CrysisTheme.BG_CARD).pack(anchor="w", padx=12, pady=(6, 2))
+            tk.Label(info_row, text="[ Mission Select: Standard campaign equipment will be assigned on insertion ]",
+                     font=(CrysisTheme.FONT_UI, 8), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_CARD).pack(anchor="w", padx=12, pady=(0, 6))
+            return
 
         # Slots Row (5 Slots)
         slots_row = tk.Frame(card, bg=CrysisTheme.BG_PANEL)
@@ -1404,21 +1456,47 @@ class CrysisCoopLauncher(tk.Tk):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
+        actual_host_ip = bind_ip
+        if actual_host_ip == "0.0.0.0" or not actual_host_ip:
+            ips = get_network_ips()
+            radmin = [i for i in ips if i.startswith("26.")]
+            actual_host_ip = radmin[0] if radmin else (ips[0] if ips else "127.0.0.1")
+
+        targets = {"255.255.255.255", "26.255.255.255", "127.0.0.1", "26.70.173.250", "26.196.29.208"}
+        last_ip = self.profile.get("last_host_ip")
+        if last_ip:
+            targets.add(last_ip)
+        for ip in get_network_ips():
+            parts = ip.split(".")
+            if len(parts) == 4:
+                targets.add(f"{parts[0]}.{parts[1]}.{parts[2]}.255")
+
         while self.is_host and not self.stop_threads:
             pkt = {
                 "type": "LOBBY_ANNOUNCE",
                 "lobby_name": lobby_name,
-                "host_ip": bind_ip,
+                "host_ip": actual_host_ip,
                 "game_title": "Crysis Warhead" if self.settings.get("game") == "warhead" else "Crysis 1",
                 "mission_title": self.settings.get("mission_title", "Contact"),
                 "player_count": 1 + len(self.remote_players)
             }
             data = json.dumps(pkt).encode("utf-8")
-            for bcast in ["255.255.255.255", "127.0.0.1"]:
+            for bcast in targets:
                 try:
                     s.sendto(data, (bcast, DISCOVERY_PORT))
                 except Exception:
                     pass
+
+            # Announce to HTTP bridge
+            for bridge_url in ["http://26.70.173.250:9000/lobby/register", "http://127.0.0.1:9000/lobby/register"]:
+                try:
+                    import urllib.request
+                    body = json.dumps({"name": lobby_name, "host_ip": actual_host_ip, "game_title": pkt["game_title"], "mission_title": pkt["mission_title"], "player_count": pkt["player_count"]}).encode("utf-8")
+                    req = urllib.request.Request(bridge_url, data=body, headers={"Content-Type": "application/json"})
+                    urllib.request.urlopen(req, timeout=0.5)
+                except Exception:
+                    pass
+
             time.sleep(2)
         s.close()
 
@@ -1432,10 +1510,15 @@ class CrysisCoopLauncher(tk.Tk):
                     data, addr = s.recvfrom(2048)
                     pkt = json.loads(data.decode("utf-8"))
                     if pkt.get("type") == "DISCOVER" and self.is_host:
+                        host_ip = getattr(self, "host_bind_ip", None)
+                        if not host_ip or host_ip == "0.0.0.0":
+                            ips = get_network_ips()
+                            radmin = [i for i in ips if i.startswith("26.")]
+                            host_ip = radmin[0] if radmin else (ips[0] if ips else addr[0])
                         reply = {
                             "type": "LOBBY_ANNOUNCE",
                             "lobby_name": f"{self.profile.get('callsign', 'Nomad')}'s Squad",
-                            "host_ip": addr[0],
+                            "host_ip": host_ip,
                             "game_title": "Crysis Warhead" if self.settings.get("game") == "warhead" else "Crysis 1",
                             "mission_title": self.settings.get("mission_title", "Contact"),
                             "player_count": 1 + len(self.remote_players)
@@ -1569,18 +1652,19 @@ class CrysisCoopLauncher(tk.Tk):
                         amult = pkt.get("ammo_multiplier", 1)
                         o2 = pkt.get("disable_drowning", True)
                         att = pkt.get("enable_all_attachments", True)
-                        h_ip = pkt.get("host_ip", "127.0.0.1")
+                        peer_ip = self.client_sock.getpeername()[0] if self.client_sock else None
+                        h_ip = peer_ip or pkt.get("host_ip", "127.0.0.1")
 
-                        self.after(0, lambda: self.launch_crysis_client(
-                            host_ip=h_ip,
-                            mission_code=m_code,
-                            difficulty_val=diff_val,
-                            enemy_mult=emult,
-                            ammo_mult=amult,
-                            disable_drowning=o2,
-                            enable_attachments=att,
-                            loadout=self.get_local_loadout()
-                        ))
+                        self.after(0, lambda hip=h_ip, mc=m_code, dv=diff_val, em=emult, am=amult, d2=o2, at=att:
+                                   self.show_client_launch_countdown(
+                                       host_ip=hip,
+                                       mission_code=mc,
+                                       difficulty_val=dv,
+                                       enemy_mult=em,
+                                       ammo_mult=am,
+                                       disable_drowning=d2,
+                                       enable_attachments=at
+                                   ))
 
             except Exception:
                 break
@@ -1779,6 +1863,78 @@ map {mission_code} s
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
+    def show_client_launch_countdown(self, host_ip, mission_code, difficulty_val,
+                                     enemy_mult, ammo_mult, disable_drowning, enable_attachments):
+        modal = tk.Toplevel(self)
+        modal.title("Mission Launch In Progress")
+        modal.geometry("520x300")
+        modal.configure(bg=CrysisTheme.BG_DARK)
+        modal.transient(self)
+        modal.grab_set()
+
+        tk.Label(modal, text="MISSION INSERTION INITIATED", font=(CrysisTheme.FONT_TITLE, 14, "bold"),
+                 fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_DARK).pack(pady=(24, 6))
+
+        m_name = mission_code.upper()
+        lbl_msg = tk.Label(modal, text=f"Squad Leader is initializing mission: {m_name}\nSynchronizing network connection in 12s...",
+                           font=(CrysisTheme.FONT_UI, 10), fg=CrysisTheme.TEXT_MAIN, bg=CrysisTheme.BG_DARK)
+        lbl_msg.pack(pady=10)
+
+        pbar = ttk.Progressbar(modal, orient="horizontal", length=380, mode="determinate", maximum=12)
+        pbar.pack(pady=8)
+        pbar["value"] = 0
+
+        tk.Label(modal, text=f"Target Server: {host_ip}:64087\n(Hotkeys F5/F6 inside Crysis will reconnect if ever dropped to menu)",
+                 font=(CrysisTheme.FONT_MONO, 8), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_DARK).pack(pady=4)
+
+        timer_val = [12]
+        launched = [False]
+
+        def do_launch():
+            if launched[0]:
+                return
+            launched[0] = True
+            try:
+                modal.destroy()
+            except Exception:
+                pass
+            self.launch_crysis_client(
+                host_ip=host_ip,
+                mission_code=mission_code,
+                difficulty_val=difficulty_val,
+                enemy_mult=enemy_mult,
+                ammo_mult=ammo_mult,
+                disable_drowning=disable_drowning,
+                enable_attachments=enable_attachments,
+                loadout=self.get_local_loadout()
+            )
+
+        btn_row = tk.Frame(modal, bg=CrysisTheme.BG_DARK)
+        btn_row.pack(pady=16)
+
+        btn_now = tk.Button(btn_row, text="CONNECT NOW", font=(CrysisTheme.FONT_UI, 10, "bold"),
+                            fg="#ffffff", bg=CrysisTheme.GREEN_ACCENT, bd=0, padx=18, pady=8, cursor="hand2",
+                            command=do_launch)
+        btn_now.pack(side="left", padx=8)
+
+        btn_cancel = tk.Button(btn_row, text="CANCEL", font=(CrysisTheme.FONT_UI, 10),
+                               fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL, bd=1, padx=16, pady=8, cursor="hand2",
+                               command=modal.destroy)
+        btn_cancel.pack(side="left", padx=8)
+
+        def tick():
+            if launched[0]:
+                return
+            timer_val[0] -= 1
+            pbar["value"] = 12 - timer_val[0]
+            if timer_val[0] <= 0:
+                do_launch()
+            else:
+                lbl_msg.config(text=f"Squad Leader is initializing mission: {m_name}\nSynchronizing network connection in {timer_val[0]}s...")
+                modal.after(1000, tick)
+
+        modal.after(1000, tick)
+
     def launch_crysis_client(self, host_ip, mission_code, difficulty_val, enemy_mult, ammo_mult,
                              disable_drowning, enable_attachments, loadout):
         callsign = self.profile.get("callsign", "Psycho")
@@ -1811,6 +1967,8 @@ coop_all_attachments = {1 if enable_attachments else 0}
 coop_disable_o2 = {1 if disable_drowning else 0}
 coop_enemy_mult = {int(enemy_mult)}
 coop_ammo_multiplier = {ammo_mult}
+bind f5 "connect {host_ip}:64087"
+bind f6 "connect {host_ip}:64087"
 connect {host_ip}:64087
 hud_subtitles = 1
 hud_startPaused = 0
