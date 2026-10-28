@@ -1861,8 +1861,7 @@ map {mission_code} s
             exe_path,
             "-mod", "CrysisCoop",
             "-devmode",
-            "+exec", "host.cfg",
-            f"+map {mission_code} s"
+            "+exec", "host.cfg"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
