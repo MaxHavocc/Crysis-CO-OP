@@ -11,6 +11,9 @@ import time
 import json
 import socket
 import threading
+import queue
+import ipaddress
+from concurrent.futures import ThreadPoolExecutor
 import subprocess
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
@@ -216,6 +219,156 @@ def save_settings(data):
     except Exception:
         pass
 
+def normalize_lobby(packet, host_ip):
+    """Keep discovery data bounded and use the endpoint we actually contacted."""
+    if not isinstance(packet, dict):
+        return None
+    try:
+        address = ipaddress.IPv4Address(host_ip)
+        if address.is_unspecified or address.is_multicast or str(address) == "255.255.255.255":
+            return None
+        count = max(1, min(2, int(packet.get("player_count", 1))))
+    except (ValueError, TypeError, ipaddress.AddressValueError):
+        return None
+    return {
+        "host_ip": str(address),
+        "lobby_name": str(packet.get("lobby_name") or packet.get("name") or "Crysis Squad")[:100],
+        "game_title": str(packet.get("game_title") or "Crysis 1")[:80],
+        "mission_title": str(packet.get("mission_title") or "Contact")[:100],
+        "player_count": count,
+    }
+
+
+def query_live_lobby(host_ip, udp_lobby=None):
+    """Probe without HELLO/roster membership; support a fresh legacy UDP reply."""
+    try:
+        with socket.create_connection((host_ip, DEFAULT_PORT), timeout=0.7) as conn:
+            conn.sendall(b'{"type":"LOBBY_QUERY"}\n')
+            payload = b""
+            deadline = time.monotonic() + 0.7
+            while b"\n" not in payload and len(payload) < 16384:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    break
+                conn.settimeout(remaining)
+                try:
+                    chunk = conn.recv(min(4096, 16384 - len(payload)))
+                except socket.timeout:
+                    break
+                if not chunk:
+                    break
+                payload += chunk
+            if b"\n" in payload:
+                try:
+                    reply = json.loads(payload.split(b"\n", 1)[0].decode("utf-8"))
+                    if isinstance(reply, dict) and reply.get("type") == "LOBBY_STATUS" and reply.get("hosting") is True:
+                        return normalize_lobby(reply, host_ip)
+                except (ValueError, UnicodeError):
+                    pass
+            # Older launchers do not implement LOBBY_QUERY. Only a fresh UDP
+            # response from this scan plus a reachable TCP listener qualifies.
+            return normalize_lobby(udp_lobby, host_ip) if udp_lobby else None
+    except OSError:
+        return None
+
+
+def discover_live_lobbies(local_ips, last_host_ip=None):
+    """HTTP rows are candidates, never proof that a host still exists."""
+    excluded = set(local_ips) | {"127.0.0.1", "0.0.0.0"}
+    targets = {"255.255.255.255", "26.255.255.255", "26.70.173.250", "26.196.29.208"}
+    if last_host_ip:
+        targets.add(last_host_ip)
+    for ip in local_ips:
+        parts = ip.split(".")
+        if len(parts) == 4:
+            targets.add(".".join(parts[:3]) + ".255")
+    query = json.dumps({"type": "DISCOVER"}).encode("utf-8")
+    candidates = {}
+    fresh_udp = {}
+    udp_endpoints = {}
+
+    def bridge_candidates(url):
+        import urllib.request
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "CrysisLauncher"})
+            with urllib.request.urlopen(req, timeout=0.6) as response:
+                payload = json.loads(response.read(65536).decode("utf-8"))
+            if isinstance(payload, dict):
+                payload = payload.get("lobbies", [])
+            return payload[:64] if isinstance(payload, list) else []
+        except (OSError, ValueError, UnicodeError):
+            return []
+
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+        def send_query(addresses):
+            for address in addresses:
+                try:
+                    sock.sendto(query, (address, DISCOVERY_PORT))
+                except OSError:
+                    pass
+
+        def collect_replies(seconds):
+            deadline = time.monotonic() + seconds
+            while time.monotonic() < deadline:
+                sock.settimeout(max(0.01, deadline - time.monotonic()))
+                try:
+                    data, address = sock.recvfrom(8192)
+                    packet = json.loads(data.decode("utf-8"))
+                    if not isinstance(packet, dict) or packet.get("type") != "LOBBY_ANNOUNCE":
+                        continue
+                    lobby = normalize_lobby(packet, address[0])
+                    if lobby and lobby["host_ip"] not in excluded:
+                        advertised = normalize_lobby(packet, packet.get("host_ip"))
+                        if advertised and advertised["host_ip"] in excluded:
+                            advertised = None
+                        # A host may answer UDP on LAN while its lobby TCP
+                        # socket is bound to VPN. Try both live endpoints, but
+                        # group announcements from its adapters into one row.
+                        identity = advertised["host_ip"] if advertised else lobby["host_ip"]
+                        candidates[identity] = lobby
+                        endpoints = udp_endpoints.setdefault(identity, [])
+                        for endpoint in (lobby, advertised):
+                            if endpoint is not None:
+                                ip = endpoint["host_ip"]
+                                fresh_udp[ip] = endpoint
+                                if ip not in endpoints:
+                                    endpoints.append(ip)
+                except socket.timeout:
+                    break
+                except (OSError, ValueError, UnicodeError):
+                    continue
+
+        send_query(targets)
+        collect_replies(1.2)
+        bridge_urls = ["http://26.70.173.250:9000/lobby/list", "http://192.168.88.36:9000/lobby/list", "http://127.0.0.1:9000/lobby/list"]
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            for rows in pool.map(bridge_candidates, bridge_urls):
+                for packet in rows:
+                    lobby = normalize_lobby(packet, packet.get("host_ip")) if isinstance(packet, dict) else None
+                    if lobby and lobby["host_ip"] not in excluded:
+                        candidates.setdefault(lobby["host_ip"], lobby)
+        bridge_only = set(candidates) - set(fresh_udp)
+        if bridge_only:
+            send_query(bridge_only)
+            collect_replies(0.8)
+
+    addresses = list(candidates)[:64]
+
+    def check_candidate(identity):
+        for endpoint in udp_endpoints.get(identity, (identity,)):
+            lobby = query_live_lobby(endpoint, fresh_udp.get(endpoint))
+            if lobby:
+                return lobby
+        return None
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        checked = list(pool.map(check_candidate, addresses))
+    live = {lobby["host_ip"]: lobby for lobby in checked if lobby}
+    return sorted(live.values(), key=lambda lobby: (lobby["lobby_name"].lower(), lobby["host_ip"]))
+
+
 class CrysisCoopLauncher(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -240,6 +393,12 @@ class CrysisCoopLauncher(tk.Tk):
         self.weapon_images = {}
         self.load_weapon_icons()
 
+        self._lobby_scan_generation = 0
+        self._lobby_scan_inflight = False
+        self._lobby_refresh_after = None
+        self._lobby_poll_after = None
+        self._lobby_scan_results = queue.Queue()
+        self.host_lobby_name = None
         self.setup_styles()
         self.build_ui()
 
@@ -253,6 +412,25 @@ class CrysisCoopLauncher(tk.Tk):
         self.style.theme_use("clam")
         self.style.configure(".", background=CrysisTheme.BG_DARK, foreground=CrysisTheme.TEXT_MAIN)
         self.style.configure("TScrollbar", background=CrysisTheme.BG_INPUT, troughcolor=CrysisTheme.BG_DARK, borderwidth=0)
+        # Treeview has its own field background; the global theme leaves it white.
+        self.style.configure("Lobby.Treeview", background=CrysisTheme.BG_PANEL,
+                             fieldbackground=CrysisTheme.BG_PANEL,
+                             foreground=CrysisTheme.TEXT_MAIN, rowheight=32,
+                             bordercolor=CrysisTheme.BORDER, borderwidth=0,
+                             font=(CrysisTheme.FONT_UI, 10))
+        self.style.map("Lobby.Treeview",
+                       background=[("selected", CrysisTheme.BORDER_LIGHT),
+                                   ("!selected", CrysisTheme.BG_PANEL)],
+                       foreground=[("selected", "#ffffff"),
+                                   ("!selected", CrysisTheme.TEXT_MAIN)])
+        self.style.configure("Lobby.Treeview.Heading", background=CrysisTheme.BG_INPUT,
+                             foreground=CrysisTheme.CYAN_ACCENT,
+                             font=(CrysisTheme.FONT_UI, 10, "bold"), relief="flat")
+        self.style.map("Lobby.Treeview.Heading",
+                       background=[("active", CrysisTheme.BORDER_LIGHT),
+                                   ("pressed", CrysisTheme.BORDER_LIGHT)],
+                       foreground=[("active", CrysisTheme.TEXT_MAIN),
+                                   ("pressed", CrysisTheme.TEXT_MAIN)])
 
     def load_weapon_icons(self):
         for w_id in WEAPON_METADATA.keys():
@@ -321,6 +499,13 @@ class CrysisCoopLauncher(tk.Tk):
         self.show_landing_view()
 
     def hide_all_views(self):
+        self._lobby_scan_generation += 1
+        self._lobby_scan_inflight = False
+        for name in ("_lobby_refresh_after", "_lobby_poll_after"):
+            callback = getattr(self, name, None)
+            if callback is not None:
+                self.after_cancel(callback)
+                setattr(self, name, None)
         for v in [self.landing_frame, self.host_setup_frame, self.join_browser_frame, self.lobby_room_frame]:
             v.pack_forget()
 
@@ -524,6 +709,8 @@ class CrysisCoopLauncher(tk.Tk):
             self.server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server_sock.bind((bind_ip, DEFAULT_PORT))
             self.server_sock.listen(5)
+            self.server_sock.settimeout(0.5)
+            self.host_lobby_name = lobby_name
             self.host_bind_ip = bind_ip
             self.is_host = True
             self.is_connected = True
@@ -532,10 +719,10 @@ class CrysisCoopLauncher(tk.Tk):
             self.remote_players = {}
 
             # Start listener thread
-            threading.Thread(target=self.host_accept_loop, daemon=True).start()
+            threading.Thread(target=self.host_accept_loop, args=(self.server_sock,), daemon=True).start()
 
             # Start UDP broadcast registration loop
-            threading.Thread(target=self.register_lobby_loop, args=(lobby_name, bind_ip), daemon=True).start()
+            threading.Thread(target=self.register_lobby_loop, args=(lobby_name, bind_ip, self.server_sock), daemon=True).start()
 
             self.show_lobby_room_view()
         except Exception as e:
@@ -574,7 +761,8 @@ class CrysisCoopLauncher(tk.Tk):
 
         # Treeview for lobbies
         cols = ("Name", "Host IP", "Campaign", "Mission", "Players")
-        self.tree_lobbies = ttk.Treeview(table_frame, columns=cols, show="headings", height=8)
+        self.tree_lobbies = ttk.Treeview(table_frame, columns=cols, show="headings", height=8,
+                                        style="Lobby.Treeview")
         self.tree_lobbies.heading("Name", text="Lobby Name")
         self.tree_lobbies.heading("Host IP", text="Host IP Address")
         self.tree_lobbies.heading("Campaign", text="Campaign")
@@ -623,83 +811,57 @@ class CrysisCoopLauncher(tk.Tk):
         btn_direct.pack(side="left", padx=12, pady=12)
 
     def refresh_lobbies_thread(self):
-        for item in self.tree_lobbies.get_children():
-            self.tree_lobbies.delete(item)
+        if self._lobby_scan_inflight or not self.join_browser_frame.winfo_manager():
+            return
+        if self._lobby_refresh_after is not None:
+            self.after_cancel(self._lobby_refresh_after)
+            self._lobby_refresh_after = None
+        self._lobby_scan_generation += 1
+        generation = self._lobby_scan_generation
+        self._lobby_scan_inflight = True
+        local_ips = tuple(get_network_ips())
+        last_host_ip = self.profile.get("last_host_ip")
 
         def worker():
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            s.settimeout(1.2)
-            query = json.dumps({"type": "DISCOVER"}).encode("utf-8")
+            try:
+                result = discover_live_lobbies(local_ips, last_host_ip)
+            except Exception:
+                result = []
+            self._lobby_scan_results.put((generation, result))
 
-            # Multi-interface broadcast targets (LAN, Radmin VPN, direct peers)
-            targets = {"255.255.255.255", "26.255.255.255", "127.0.0.1", "26.70.173.250", "26.196.29.208"}
-            last_ip = self.profile.get("last_host_ip")
-            if last_ip:
-                targets.add(last_ip)
-            for ip in get_network_ips():
-                parts = ip.split(".")
-                if len(parts) == 4:
-                    targets.add(f"{parts[0]}.{parts[1]}.{parts[2]}.255")
-
-            for bcast in targets:
+        def poll_results():
+            self._lobby_poll_after = None
+            if generation != self._lobby_scan_generation:
+                return
+            result = None
+            while True:
                 try:
-                    s.sendto(query, (bcast, DISCOVERY_PORT))
-                except Exception:
-                    pass
-
-            discovered = []
-            seen_ips = set()
-            start = time.time()
-            my_ips = set(get_network_ips())
-            while time.time() - start < 1.2:
-                try:
-                    data, addr = s.recvfrom(2048)
-                    pkt = json.loads(data.decode("utf-8"))
-                    if pkt.get("type") == "LOBBY_ANNOUNCE":
-                        h_ip = pkt.get("host_ip") or addr[0]
-                        if h_ip in my_ips or h_ip in seen_ips:
-                            continue
-                        seen_ips.add(h_ip)
-                        pkt["host_ip"] = h_ip
-                        discovered.append(pkt)
-                except Exception:
-                    pass
-            s.close()
-
-            # HTTP bridge fallback discovery
-            for bridge_url in ["http://26.70.173.250:9000/lobby/list", "http://192.168.88.36:9000/lobby/list", "http://127.0.0.1:9000/lobby/list"]:
-                try:
-                    import urllib.request
-                    req = urllib.request.Request(bridge_url, headers={"User-Agent": "CrysisLauncher"})
-                    with urllib.request.urlopen(req, timeout=0.6) as resp:
-                        lobbies = json.loads(resp.read().decode("utf-8"))
-                        for lb in lobbies:
-                            h_ip = lb.get("host_ip")
-                            if h_ip and h_ip not in my_ips and h_ip not in seen_ips:
-                                seen_ips.add(h_ip)
-                                discovered.append({
-                                    "lobby_name": lb.get("name") or lb.get("lobby_name", "Crysis Squad"),
-                                    "host_ip": h_ip,
-                                    "game_title": lb.get("game_title", "Crysis 1"),
-                                    "mission_title": lb.get("mission_title", "Contact"),
-                                    "player_count": lb.get("player_count", 1)
-                                })
-                except Exception:
-                    pass
-
-            def update_ui():
-                for p in discovered:
-                    self.tree_lobbies.insert("", "end", values=(
-                        p.get("lobby_name", "Crysis Squad"),
-                        p.get("host_ip", ""),
-                        p.get("game_title", "Crysis 1"),
-                        p.get("mission_title", "Contact"),
-                        f"{p.get('player_count', 1)}/2"
-                    ))
-            self.after(0, update_ui)
+                    result_generation, lobbies = self._lobby_scan_results.get_nowait()
+                    if result_generation == generation:
+                        result = lobbies
+                except queue.Empty:
+                    break
+            if result is None:
+                self._lobby_poll_after = self.after(100, poll_results)
+                return
+            selected = self.tree_lobbies.selection()
+            selected_ip = str(self.tree_lobbies.item(selected[0])["values"][1]) if selected else None
+            # Replace the previous snapshot, removing hosts that no longer
+            # answer. Never append rows from an older overlapping scan.
+            for item in self.tree_lobbies.get_children():
+                self.tree_lobbies.delete(item)
+            for lobby in result:
+                row = self.tree_lobbies.insert("", "end", values=(
+                    lobby["lobby_name"], lobby["host_ip"], lobby["game_title"],
+                    lobby["mission_title"], f"{lobby['player_count']}/2"))
+                if lobby["host_ip"] == selected_ip:
+                    self.tree_lobbies.selection_set(row)
+            self._lobby_scan_inflight = False
+            if self.join_browser_frame.winfo_manager():
+                self._lobby_refresh_after = self.after(3000, self.refresh_lobbies_thread)
 
         threading.Thread(target=worker, daemon=True).start()
+        self._lobby_poll_after = self.after(100, poll_results)
 
     def action_join_selected(self):
         sel = self.tree_lobbies.selection()
@@ -725,6 +887,7 @@ class CrysisCoopLauncher(tk.Tk):
         self.remote_players = {}
 
         def worker():
+            s = None
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.settimeout(5)
@@ -743,10 +906,17 @@ class CrysisCoopLauncher(tk.Tk):
 
                 self.after(0, self.show_lobby_room_view)
                 threading.Thread(target=self.client_receive_loop, daemon=True).start()
-            except Exception as e:
-                self.after(0, lambda: messagebox.showerror("Connection Error",
-                                                          f"Could not connect to {host_ip}:{DEFAULT_PORT}\n{e}",
-                                                          parent=self))
+            except Exception as error:
+                if s is not None:
+                    s.close()
+                if self.client_sock is s:
+                    self.client_sock = None
+                    self.is_connected = False
+                # Exception variables are cleared after except; capture the
+                # message so a vanished lobby produces an error, not NameError.
+                message = f"Could not connect to {host_ip}:{DEFAULT_PORT}\n{error}"
+                self.after(0, lambda text=message: messagebox.showerror(
+                    "Connection Error", text, parent=self))
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -1452,7 +1622,8 @@ class CrysisCoopLauncher(tk.Tk):
     # =========================================================================
     # NETWORKING ENGINE (HOST ACCEPT, CLIENT RECEIVE, DISCOVERY, LAUNCH SYNC)
     # =========================================================================
-    def register_lobby_loop(self, lobby_name, bind_ip):
+    def register_lobby_loop(self, lobby_name, bind_ip, server_sock=None):
+        server_sock = server_sock or self.server_sock
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
@@ -1471,7 +1642,7 @@ class CrysisCoopLauncher(tk.Tk):
             if len(parts) == 4:
                 targets.add(f"{parts[0]}.{parts[1]}.{parts[2]}.255")
 
-        while self.is_host and not self.stop_threads:
+        while self.is_host and self.server_sock is server_sock and not self.stop_threads:
             pkt = {
                 "type": "LOBBY_ANNOUNCE",
                 "lobby_name": lobby_name,
@@ -1493,7 +1664,8 @@ class CrysisCoopLauncher(tk.Tk):
                     import urllib.request
                     body = json.dumps({"name": lobby_name, "host_ip": actual_host_ip, "game_title": pkt["game_title"], "mission_title": pkt["mission_title"], "player_count": pkt["player_count"]}).encode("utf-8")
                     req = urllib.request.Request(bridge_url, data=body, headers={"Content-Type": "application/json"})
-                    urllib.request.urlopen(req, timeout=0.5)
+                    with urllib.request.urlopen(req, timeout=0.5):
+                        pass
                 except Exception:
                     pass
 
@@ -1505,11 +1677,12 @@ class CrysisCoopLauncher(tk.Tk):
         try:
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind(("", DISCOVERY_PORT))
+            s.settimeout(0.5)
             while not self.stop_threads:
                 try:
                     data, addr = s.recvfrom(2048)
                     pkt = json.loads(data.decode("utf-8"))
-                    if pkt.get("type") == "DISCOVER" and self.is_host:
+                    if pkt.get("type") == "DISCOVER" and self.is_host and self.server_sock is not None:
                         host_ip = getattr(self, "host_bind_ip", None)
                         if not host_ip or host_ip == "0.0.0.0":
                             ips = get_network_ips()
@@ -1517,7 +1690,7 @@ class CrysisCoopLauncher(tk.Tk):
                             host_ip = radmin[0] if radmin else (ips[0] if ips else addr[0])
                         reply = {
                             "type": "LOBBY_ANNOUNCE",
-                            "lobby_name": f"{self.profile.get('callsign', 'Nomad')}'s Squad",
+                            "lobby_name": self.host_lobby_name or f"{self.profile.get('callsign', 'Nomad')}'s Squad",
                             "host_ip": host_ip,
                             "game_title": "Crysis Warhead" if self.settings.get("game") == "warhead" else "Crysis 1",
                             "mission_title": self.settings.get("mission_title", "Contact"),
@@ -1531,20 +1704,28 @@ class CrysisCoopLauncher(tk.Tk):
         finally:
             s.close()
 
-    def host_accept_loop(self):
-        while self.is_host and self.server_sock:
+    def host_accept_loop(self, server_sock=None):
+        server_sock = server_sock or self.server_sock
+        while self.is_host and self.server_sock is server_sock:
             try:
-                conn, addr = self.server_sock.accept()
-                self.host_clients.append(conn)
-                threading.Thread(target=self.host_client_handler, args=(conn, addr), daemon=True).start()
-            except Exception:
+                conn, addr = server_sock.accept()
+                if not self.is_host or self.server_sock is not server_sock:
+                    conn.close()
+                    break
+                # Only HELLO adds a peer; discovery probes never join the lobby.
+                threading.Thread(target=self.host_client_handler, args=(conn, addr, server_sock), daemon=True).start()
+            except socket.timeout:
+                continue
+            except OSError:
                 break
 
-    def host_client_handler(self, conn, addr):
+    def host_client_handler(self, conn, addr, server_sock=None):
+        server_sock = server_sock or self.server_sock
+        conn.settimeout(5)
         buffer = ""
         client_callsign = None
         try:
-            while self.is_host:
+            while self.is_host and self.server_sock is server_sock:
                 data = conn.recv(4096)
                 if not data:
                     break
@@ -1557,7 +1738,21 @@ class CrysisCoopLauncher(tk.Tk):
                     pkt = json.loads(line)
                     ptype = pkt.get("type")
 
+                    if ptype == "LOBBY_QUERY":
+                        if self.is_host and self.server_sock is server_sock:
+                            status = {
+                                "type": "LOBBY_STATUS", "hosting": True,
+                                "lobby_name": self.host_lobby_name or f"{self.profile.get('callsign', 'Nomad')}'s Squad",
+                                "game_title": "Crysis Warhead" if self.settings.get("game") == "warhead" else "Crysis 1",
+                                "mission_title": self.settings.get("mission_title", "Contact"),
+                                "player_count": 1 + len(self.remote_players),
+                            }
+                            conn.sendall((json.dumps(status) + "\n").encode("utf-8"))
+                        return
                     if ptype == "HELLO":
+                        conn.settimeout(None)
+                        if conn not in self.host_clients:
+                            self.host_clients.append(conn)
                         client_callsign = pkt.get("callsign", "Psycho")
                         self.remote_players[client_callsign] = {
                             "is_host": False,
@@ -1586,14 +1781,15 @@ class CrysisCoopLauncher(tk.Tk):
         finally:
             if conn in self.host_clients:
                 self.host_clients.remove(conn)
-            if client_callsign in self.remote_players:
+            if self.server_sock is server_sock and client_callsign in self.remote_players:
                 del self.remote_players[client_callsign]
             try:
                 conn.close()
             except Exception:
                 pass
-            self.broadcast_lobby_state()
-            self.after(0, self.update_lobby_room_ui)
+            if client_callsign is not None and self.server_sock is server_sock:
+                self.broadcast_lobby_state()
+                self.after(0, self.update_lobby_room_ui)
 
     def broadcast_lobby_state(self):
         if not self.is_host:
@@ -1670,6 +1866,9 @@ class CrysisCoopLauncher(tk.Tk):
                 break
 
     def stop_hosting(self):
+        self.is_host = False
+        self.is_connected = False
+        self.is_ready = False
         if self.server_sock:
             try:
                 self.server_sock.close()
@@ -1694,6 +1893,8 @@ class CrysisCoopLauncher(tk.Tk):
     # =========================================================================
     def action_launch_game(self):
         if not self.is_host:
+            return
+        if self.settings.get("game", "crysis") != "warhead" and self.get_crysis_network_executable() is None:
             return
 
         mission_code = self.settings.get("mission_code", "island")
@@ -1744,11 +1945,33 @@ class CrysisCoopLauncher(tk.Tk):
                 weapons.append(w)
         return weapons
 
+    def get_crysis_network_executable(self):
+        # C1-Launcher applies the legacy GameSpy direct-connect fix in memory
+        # while retaining the stock engine and Mods/CrysisCoop/Bin32 DLL.
+        # Keep it beside the original executable, which remains untouched.
+        executable = os.path.join(CRYSIS_ROOT_DIR, "Bin32", "CrysisCoop.exe")
+        if os.path.isfile(executable):
+            return executable
+        messagebox.showerror(
+            "Crysis connection support missing",
+            "The co-op runtime is missing.\n\n"
+            "Run Setup_Coop_Runtime.ps1 in the mod folder, then try again.\n\n"
+            f"Expected file: {executable}",
+            parent=self,
+        )
+        return None
+
     def launch_crysis_host(self, mission_code, difficulty_val, enemy_mult, ammo_mult,
                            disable_drowning, enable_attachments, loadout):
         callsign = self.profile.get("callsign", "Nomad")
         equipped_weapons = self.extract_weapon_list_from_loadout(loadout)
         loadout_str = ",".join(equipped_weapons)
+        game_type = self.settings.get("game", "crysis")
+        exe_path = None
+        if game_type != "warhead":
+            exe_path = self.get_crysis_network_executable()
+            if exe_path is None:
+                return
 
         ips = get_network_ips()
         bind_ip = "0.0.0.0"
@@ -1783,14 +2006,14 @@ r_Width 1280
 r_Height 720
 g_skipIntro 1
 cl_hud 1
-net_name {callsign}
+name "{callsign}"
 cl_gs_nick {callsign}
 g_difficultyLevel {difficulty_val}
-coop_loadout = "{loadout_str}"
-coop_all_attachments = {1 if enable_attachments else 0}
-coop_disable_o2 = {1 if disable_drowning else 0}
-coop_enemy_mult = {int(enemy_mult)}
-coop_ammo_multiplier = {ammo_mult}
+coop_loadout "{loadout_str}"
+coop_all_attachments {1 if enable_attachments else 0}
+coop_disable_o2 {1 if disable_drowning else 0}
+coop_enemy_mult {int(enemy_mult)}
+coop_ammo_multiplier {ammo_mult}
 hud_subtitles 1
 hud_startPaused 0
 bind f10 coop_teleport
@@ -1800,7 +2023,7 @@ bind f11 coop_god
 map {mission_code} s
 """
         try:
-            subprocess.run(["taskkill", "/F", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
+            subprocess.run(["taskkill", "/F", "/IM", "CrysisCoop.exe", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
                            capture_output=True, timeout=5)
             time.sleep(0.5)
         except Exception:
@@ -1820,21 +2043,6 @@ map {mission_code} s
             except Exception:
                 pass
 
-        bin_dirs = [
-            os.path.join(CRYSIS_ROOT_DIR, "Bin32"),
-            os.path.join(CRYSIS_ROOT_DIR, "Bin64"),
-        ]
-        exe_path = None
-        for bd in bin_dirs:
-            for ex in ["Crysis.exe", "Crysis64.exe"]:
-                p = os.path.join(bd, ex)
-                if os.path.exists(p):
-                    exe_path = p
-                    break
-            if exe_path:
-                break
-
-        game_type = self.settings.get("game", "crysis")
         if game_type == "warhead":
             # Crysis Warhead Standalone (Co-op mod is NOT installed or meant for Warhead)
             warhead_bin_dirs = [
@@ -1861,10 +2069,6 @@ map {mission_code} s
                 f"+map {mission_code}"
             ]
             subprocess.Popen(cmd, cwd=os.path.dirname(warhead_exe))
-            return
-
-        if not exe_path:
-            messagebox.showerror("Error", "Could not locate Crysis.exe or Crysis64.exe!", parent=self)
             return
 
         cmd = [
@@ -1952,6 +2156,12 @@ map {mission_code} s
         callsign = self.profile.get("callsign", "Psycho")
         equipped_weapons = self.extract_weapon_list_from_loadout(loadout)
         loadout_str = ",".join(equipped_weapons)
+        game_type = self.settings.get("game", "crysis")
+        exe_path = None
+        if game_type != "warhead":
+            exe_path = self.get_crysis_network_executable()
+            if exe_path is None:
+                return
 
         connect_cfg_content = f"""cl_serveraddr {host_ip}
 cl_serverport 64087
@@ -1971,7 +2181,7 @@ cl_serveraddr {host_ip}
 cl_serverport 64087
 g_skipIntro 1
 cl_hud 1
-net_name {callsign}
+name "{callsign}"
 cl_gs_nick {callsign}
 sv_gs_trackstats 0
 sv_gs_report 0
@@ -1980,11 +2190,11 @@ r_Fullscreen 0
 r_Width 1280
 r_Height 720
 g_difficultyLevel {difficulty_val}
-coop_loadout = "{loadout_str}"
-coop_all_attachments = {1 if enable_attachments else 0}
-coop_disable_o2 = {1 if disable_drowning else 0}
-coop_enemy_mult = {int(enemy_mult)}
-coop_ammo_multiplier = {ammo_mult}
+coop_loadout "{loadout_str}"
+coop_all_attachments {1 if enable_attachments else 0}
+coop_disable_o2 {1 if disable_drowning else 0}
+coop_enemy_mult {int(enemy_mult)}
+coop_ammo_multiplier {ammo_mult}
 hud_subtitles 1
 hud_startPaused 0
 bind f5 exec connect.cfg
@@ -1996,7 +2206,7 @@ bind f11 coop_god
 exec connect.cfg
 """
         try:
-            subprocess.run(["taskkill", "/F", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
+            subprocess.run(["taskkill", "/F", "/IM", "CrysisCoop.exe", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
                            capture_output=True, timeout=5)
             time.sleep(0.5)
         except Exception:
@@ -2033,21 +2243,6 @@ exec connect.cfg
             except Exception:
                 pass
 
-        bin_dirs = [
-            os.path.join(CRYSIS_ROOT_DIR, "Bin32"),
-            os.path.join(CRYSIS_ROOT_DIR, "Bin64"),
-        ]
-        exe_path = None
-        for bd in bin_dirs:
-            for ex in ["Crysis.exe", "Crysis64.exe"]:
-                p = os.path.join(bd, ex)
-                if os.path.exists(p):
-                    exe_path = p
-                    break
-            if exe_path:
-                break
-
-        game_type = self.settings.get("game", "crysis")
         if game_type == "warhead":
             warhead_bin_dirs = [
                 os.path.join(CRYSIS_WARHEAD_DIR, "Bin32"),
@@ -2066,10 +2261,6 @@ exec connect.cfg
             if warhead_exe:
                 cmd = [warhead_exe, "-devmode", f"+map {mission_code}"]
                 subprocess.Popen(cmd, cwd=os.path.dirname(warhead_exe))
-            return
-
-        if not exe_path:
-            messagebox.showerror("Error", "Could not locate Crysis.exe or Crysis64.exe!", parent=self)
             return
 
         cmd = [

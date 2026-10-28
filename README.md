@@ -125,6 +125,7 @@ Crysis Root Directory (C:\Program Files (x86)\Steam\steamapps\common\Crysis)
 3. Output DLL will be placed in `Bin32\CrysisCoop.dll`.
 
 ### Running the Mod
+* **One-time setup on each machine:** run `.\Setup_Coop_Runtime.ps1` from this mod folder in PowerShell. It installs the verified x86 C1-Launcher runtime as `<Crysis>\Bin32\CrysisCoop.exe` alongside the original executable, enabling direct connections without the obsolete GameSpy login requirement. See [launcher fixes and setup details](LAUNCHER_FIXES.md).
 * Launch `CrysisCoopLauncher.py` (or double click **Play Crysis Co-op** on the Desktop).
 * Select **HOST CO-OP** on the host machine, and **JOIN CO-OP** on the squadmate machine.
 * Configure your loadouts in the lobby, click Ready, and launch!
