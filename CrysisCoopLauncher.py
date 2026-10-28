@@ -668,7 +668,7 @@ class CrysisCoopLauncher(tk.Tk):
             s.close()
 
             # HTTP bridge fallback discovery
-            for bridge_url in ["http://26.70.173.250:9000/lobby/list", "http://127.0.0.1:9000/lobby/list"]:
+            for bridge_url in ["http://26.70.173.250:9000/lobby/list", "http://192.168.88.36:9000/lobby/list", "http://127.0.0.1:9000/lobby/list"]:
                 try:
                     import urllib.request
                     req = urllib.request.Request(bridge_url, headers={"User-Agent": "CrysisLauncher"})
@@ -1462,7 +1462,7 @@ class CrysisCoopLauncher(tk.Tk):
             radmin = [i for i in ips if i.startswith("26.")]
             actual_host_ip = radmin[0] if radmin else (ips[0] if ips else "127.0.0.1")
 
-        targets = {"255.255.255.255", "26.255.255.255", "127.0.0.1", "26.70.173.250", "26.196.29.208"}
+        targets = {"255.255.255.255", "26.255.255.255", "127.0.0.1", "26.70.173.250", "26.196.29.208", "192.168.88.18", "192.168.88.36"}
         last_ip = self.profile.get("last_host_ip")
         if last_ip:
             targets.add(last_ip)
@@ -1488,7 +1488,7 @@ class CrysisCoopLauncher(tk.Tk):
                     pass
 
             # Announce to HTTP bridge
-            for bridge_url in ["http://26.70.173.250:9000/lobby/register", "http://127.0.0.1:9000/lobby/register"]:
+            for bridge_url in ["http://26.70.173.250:9000/lobby/register", "http://192.168.88.36:9000/lobby/register", "http://127.0.0.1:9000/lobby/register"]:
                 try:
                     import urllib.request
                     body = json.dumps({"name": lobby_name, "host_ip": actual_host_ip, "game_title": pkt["game_title"], "mission_title": pkt["mission_title"], "player_count": pkt["player_count"]}).encode("utf-8")
@@ -1781,18 +1781,18 @@ g_breaktimeoutframes 1000000
 r_Fullscreen 0
 r_Width 1280
 r_Height 720
-g_skipIntro = 0
+g_skipIntro 1
 cl_hud 1
 net_name {callsign}
 cl_gs_nick {callsign}
-g_difficultyLevel = {difficulty_val}
+g_difficultyLevel {difficulty_val}
 coop_loadout = "{loadout_str}"
 coop_all_attachments = {1 if enable_attachments else 0}
 coop_disable_o2 = {1 if disable_drowning else 0}
 coop_enemy_mult = {int(enemy_mult)}
 coop_ammo_multiplier = {ammo_mult}
-hud_subtitles = 1
-hud_startPaused = 0
+hud_subtitles 1
+hud_startPaused 0
 bind f10 coop_teleport
 bind f8 coop_skip_cutscene
 bind f9 coop_menu
@@ -1953,6 +1953,11 @@ map {mission_code} s
         equipped_weapons = self.extract_weapon_list_from_loadout(loadout)
         loadout_str = ",".join(equipped_weapons)
 
+        connect_cfg_content = f"""cl_serveraddr {host_ip}
+cl_serverport 64087
+connect {host_ip} 64087
+"""
+
         cfg_content = f"""sys_spec_ObjectDetail 1
 sys_spec_Physics 1
 log_verbosity 3
@@ -1964,7 +1969,7 @@ net_enable_voice_chat 0
 sv_lanonly 1
 cl_serveraddr {host_ip}
 cl_serverport 64087
-g_skipIntro = 0
+g_skipIntro 1
 cl_hud 1
 net_name {callsign}
 cl_gs_nick {callsign}
@@ -1974,21 +1979,21 @@ g_breaktimeoutframes 1000000
 r_Fullscreen 0
 r_Width 1280
 r_Height 720
-g_difficultyLevel = {difficulty_val}
+g_difficultyLevel {difficulty_val}
 coop_loadout = "{loadout_str}"
 coop_all_attachments = {1 if enable_attachments else 0}
 coop_disable_o2 = {1 if disable_drowning else 0}
 coop_enemy_mult = {int(enemy_mult)}
 coop_ammo_multiplier = {ammo_mult}
-bind f5 "connect {host_ip} 64087"
-bind f6 "connect {host_ip} 64087"
-connect {host_ip} 64087
-hud_subtitles = 1
-hud_startPaused = 0
+hud_subtitles 1
+hud_startPaused 0
+bind f5 exec connect.cfg
+bind f6 exec connect.cfg
 bind f10 coop_teleport
 bind f8 coop_skip_cutscene
 bind f9 coop_menu
 bind f11 coop_god
+exec connect.cfg
 """
         try:
             subprocess.run(["taskkill", "/F", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
@@ -1996,6 +2001,23 @@ bind f11 coop_god
             time.sleep(0.5)
         except Exception:
             pass
+
+        # Write connect.cfg to all search roots so exec connect.cfg always resolves
+        conn_paths = [
+            os.path.join(CRYSIS_ROOT_DIR, "connect.cfg"),
+            os.path.join(CRYSIS_ROOT_DIR, "Bin32", "connect.cfg"),
+            os.path.join(CRYSIS_ROOT_DIR, "Bin64", "connect.cfg"),
+            os.path.join(CRYSIS_ROOT_DIR, "Game", "connect.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "connect.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "Game", "connect.cfg")
+        ]
+        for cp in conn_paths:
+            try:
+                os.makedirs(os.path.dirname(cp), exist_ok=True)
+                with open(cp, "w", encoding="utf-8") as f:
+                    f.write(connect_cfg_content)
+            except Exception:
+                pass
 
         cfg_paths = [
             os.path.join(CRYSIS_ROOT_DIR, "client.cfg"),
@@ -2054,8 +2076,7 @@ bind f11 coop_god
             exe_path,
             "-mod", "CrysisCoop",
             "-devmode",
-            "+exec", "client.cfg",
-            "+connect", host_ip, "64087"
+            "+exec", "client.cfg"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
