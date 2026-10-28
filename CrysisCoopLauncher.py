@@ -1750,9 +1750,19 @@ class CrysisCoopLauncher(tk.Tk):
         equipped_weapons = self.extract_weapon_list_from_loadout(loadout)
         loadout_str = ",".join(equipped_weapons)
 
+        ips = get_network_ips()
+        bind_ip = "0.0.0.0"
+        for ip in ips:
+            if ip.startswith("26."):
+                bind_ip = ip
+                break
+        if bind_ip == "0.0.0.0" and ips:
+            bind_ip = ips[0]
+
         cfg_content = f"""sys_spec_ObjectDetail 1
 sys_spec_Physics 1
 sv_bind 0.0.0.0
+sv_hostname {bind_ip}
 sv_servername CrysisCoopServer
 sv_gamerules Coop
 sv_port 64087
@@ -1886,7 +1896,7 @@ map {mission_code} s
         pbar.pack(pady=8)
         pbar["value"] = 0
 
-        tk.Label(modal, text=f"Target Server: {host_ip}:64087\n(Hotkeys F5/F6 inside Crysis will reconnect if ever dropped to menu)",
+        tk.Label(modal, text=f"Target Server: {host_ip} 64087\n(Hotkeys F5/F6 inside Crysis will reconnect if ever dropped to menu)",
                  font=(CrysisTheme.FONT_MONO, 8), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_DARK).pack(pady=4)
 
         timer_val = [12]
@@ -1952,6 +1962,7 @@ net_inactivitytimeout 120
 sv_timeout_disconnect 120
 net_enable_voice_chat 0
 sv_lanonly 1
+cl_serveraddr {host_ip}
 cl_serverport 64087
 g_skipIntro = 0
 cl_hud 1
@@ -1969,9 +1980,9 @@ coop_all_attachments = {1 if enable_attachments else 0}
 coop_disable_o2 = {1 if disable_drowning else 0}
 coop_enemy_mult = {int(enemy_mult)}
 coop_ammo_multiplier = {ammo_mult}
-bind f5 "connect {host_ip}:64087"
-bind f6 "connect {host_ip}:64087"
-connect {host_ip}:64087
+bind f5 "connect {host_ip} 64087"
+bind f6 "connect {host_ip} 64087"
+connect {host_ip} 64087
 hud_subtitles = 1
 hud_startPaused = 0
 bind f10 coop_teleport
@@ -2043,7 +2054,8 @@ bind f11 coop_god
             exe_path,
             "-mod", "CrysisCoop",
             "-devmode",
-            "+exec", "client.cfg"
+            "+exec", "client.cfg",
+            "+connect", host_ip, "64087"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
