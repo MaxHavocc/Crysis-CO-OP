@@ -1799,10 +1799,12 @@ map {mission_code} s
         cfg_paths = [
             os.path.join(CRYSIS_ROOT_DIR, "host.cfg"),
             os.path.join(CRYSIS_ROOT_DIR, "Game", "host.cfg"),
-            os.path.join(CRYSIS_MOD_DIR, "host.cfg")
+            os.path.join(CRYSIS_MOD_DIR, "host.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "Game", "host.cfg")
         ]
         for cp in cfg_paths:
             try:
+                os.makedirs(os.path.dirname(cp), exist_ok=True)
                 with open(cp, "w", encoding="utf-8") as f:
                     f.write(cfg_content)
             except Exception:
@@ -1859,7 +1861,8 @@ map {mission_code} s
             exe_path,
             "-mod", "CrysisCoop",
             "-devmode",
-            "+exec", "host.cfg"
+            "+exec", "host.cfg",
+            f"+map {mission_code} s"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
@@ -1987,10 +1990,12 @@ bind f11 coop_god
         cfg_paths = [
             os.path.join(CRYSIS_ROOT_DIR, "client.cfg"),
             os.path.join(CRYSIS_ROOT_DIR, "Game", "client.cfg"),
-            os.path.join(CRYSIS_MOD_DIR, "client.cfg")
+            os.path.join(CRYSIS_MOD_DIR, "client.cfg"),
+            os.path.join(CRYSIS_MOD_DIR, "Game", "client.cfg")
         ]
         for cp in cfg_paths:
             try:
+                os.makedirs(os.path.dirname(cp), exist_ok=True)
                 with open(cp, "w", encoding="utf-8") as f:
                     f.write(cfg_content)
             except Exception:
