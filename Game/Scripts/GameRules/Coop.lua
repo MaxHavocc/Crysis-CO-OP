@@ -2370,8 +2370,10 @@ function Coop:EquipPlayer(actor, additionalEquip)
 	end
 
 	local customLoadout = System.GetCVar("coop_loadout");
-	local allAttachments = tonumber(System.GetCVar("coop_all_attachments")) or 0;
-	local ammoMult = tonumber(System.GetCVar("coop_ammo_multiplier")) or 1;
+	local rawAtt = System.GetCVar("coop_all_attachments");
+	local allAttachments = (rawAtt and tonumber(rawAtt)) or 0;
+	local rawAmmo = System.GetCVar("coop_ammo_multiplier");
+	local ammoMult = (rawAmmo and tonumber(rawAmmo)) or 1;
 
 	local primaryToSelect = "SCAR";
 	if (customLoadout and customLoadout ~= "") then
@@ -2571,7 +2573,8 @@ function Coop:StartUniversalMission()
 
 	Log("Coop: StartUniversalMission on map '%s'", tostring(mapName));
 
-	local eMult = tonumber(System.GetCVar("coop_enemy_mult")) or 1;
+	local rawEMult = System.GetCVar("coop_enemy_mult");
+	local eMult = (rawEMult and tonumber(rawEMult)) or 1;
 	if (eMult > 1 and CryAction and CryAction.IsServer and CryAction.IsServer()) then
 		self:SpawnEnemiesMultiplier(eMult);
 	end
