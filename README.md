@@ -12,8 +12,8 @@ Welcome to the **Crysis Co-op Project**! This document provides a complete techn
   * **Lua (v5.1)**: Game rules (`Game/Scripts/GameRules/Coop.lua`), Actor scripts (`Game/Scripts/Entities/actor/player.lua`), flowgraph music nodes, and entity events.
   * **Python 3.10+ (Tkinter / PIL / Sockets)**: Custom launcher (`CrysisCoopLauncher.py`) handling peer discovery (UDP 64089), lobby signaling (TCP 64088), visual 5-slot weapon loadouts, and mission launch parameters.
 * **Is this on GitHub?**
-  * **Not yet**. The project began as a fork/evolution of `MikeCrossley/Crysis-Co-op`, but the modern networking layer, AI threat meter overhaul, Warhead integration, weapon loadout system, cutscene guards, and launcher were created locally.
-  * A `Setup_Git_Repo.bat` script is included in this package if you wish to push this to a private GitHub repository for team version control.
+  * **Yes:** [MaxHavocc/Crysis-CO-OP](https://github.com/MaxHavocc/Crysis-CO-OP) contains the mod source and external Python co-op launcher.
+  * Pull `main` on each machine and restart the launcher after updating. Local desktop shortcuts are generated per machine with `Setup_Desktop_Shortcut.ps1`.
 
 ---
 
@@ -126,6 +126,9 @@ Crysis Root Directory (C:\Program Files (x86)\Steam\steamapps\common\Crysis)
 
 ### Running the Mod
 * **One-time setup on each machine:** run `.\Setup_Coop_Runtime.ps1` from this mod folder in PowerShell. It installs the verified x86 C1-Launcher runtime as `<Crysis>\Bin32\CrysisCoop.exe` alongside the original executable, enabling direct connections without the obsolete GameSpy login requirement. See [launcher fixes and setup details](LAUNCHER_FIXES.md).
-* Launch `CrysisCoopLauncher.py` (or double click **Play Crysis Co-op** on the Desktop).
+* **Open the external launcher:** double-click `Play Crysis Co-op.cmd` in this folder. It finds Python 3.10+ with Tkinter and Pillow on your PC and opens `CrysisCoopLauncher.py`.
+* **Create the desktop shortcut:** run `.\Setup_Desktop_Shortcut.ps1` in PowerShell from this folder, then double-click **Play Crysis Co-op** on the Desktop. Keep the mod in this folder; rerun the shortcut installer if you move it or change Python installations.
+* **Compare launcher builds:** the top bar shows the launcher version and build fingerprint; both should match your co-op partner. Click **Version history** for recent changes. The fingerprint identifies the launcher source, not the engine DLL or installed game files. Restart the launcher after every update.
+* If PowerShell blocks a setup script under its default execution policy, run it for this invocation only with `powershell -NoProfile -ExecutionPolicy Bypass -File .\Setup_Desktop_Shortcut.ps1` (or substitute `Setup_Coop_Runtime.ps1` for runtime setup).
 * Select **HOST CO-OP** on the host machine, and **JOIN CO-OP** on the squadmate machine.
 * Configure your loadouts in the lobby, click Ready, and launch!

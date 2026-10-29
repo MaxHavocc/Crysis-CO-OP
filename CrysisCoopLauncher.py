@@ -13,6 +13,7 @@ import socket
 import threading
 import queue
 import ipaddress
+import hashlib
 from concurrent.futures import ThreadPoolExecutor
 import subprocess
 import tkinter as tk
@@ -35,6 +36,31 @@ SAVES_DIR = os.path.join(CRYSIS_MOD_DIR, "Saves")
 
 DEFAULT_PORT = 64088
 DISCOVERY_PORT = 64089
+
+# Add new releases at the top and bump the version when publishing launcher changes.
+LAUNCHER_VERSION = "1.0.0"
+LAUNCHER_HISTORY = (
+    ("1.0.0", "2026-10-28", (
+        "Show the launcher version and build fingerprint on every screen.",
+        "Add version history at the top of the launcher.",
+        "Share the Play Crysis Co-op entry point and desktop shortcut installer.",
+    )),
+    ("Previous update (bb4c3b2)", "2026-10-28", (
+        "Keep the join browser dark, including empty rows and selections.",
+        "Verify live hosts and remove lobbies that are no longer hosted.",
+        "Use the C1-Launcher runtime for direct connections without GameSpy.",
+    )),
+)
+
+
+def launcher_build_id():
+    """Identify the source loaded at startup, independent of Git and line endings."""
+    try:
+        with open(__file__, "rb") as source:
+            normalized = source.read().replace(b"\r\n", b"\n")
+        return hashlib.sha256(normalized).hexdigest()[:12]
+    except OSError:
+        return "unavailable"
 
 CRYSIS_MISSIONS = [
     ("Contact", "island", "Beach landing and initial scout contact"),
@@ -372,7 +398,8 @@ def discover_live_lobbies(local_ips, last_host_ip=None):
 class CrysisCoopLauncher(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Crysis & Warhead Co-op Launcher")
+        self.launcher_build = launcher_build_id()
+        self.title(f"Crysis & Warhead Co-op Launcher v{LAUNCHER_VERSION} | {self.launcher_build}")
         self.geometry("1180x760")
         self.minsize(1050, 680)
         self.configure(bg=CrysisTheme.BG_DARK)
@@ -453,17 +480,28 @@ class CrysisCoopLauncher(tk.Tk):
 
         # Title
         title_box = tk.Frame(self.top_bar, bg=CrysisTheme.BG_PANEL)
-        title_box.pack(side="left", padx=20, pady=8)
+        title_box.pack(side="left", padx=20, pady=1)
 
         lbl_title = tk.Label(title_box, text="CRYSIS // CO-OP OPERATIONS",
                              font=(CrysisTheme.FONT_TITLE, 15, "bold"),
                              fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_PANEL)
         lbl_title.pack(anchor="w")
 
-        lbl_sub = tk.Label(title_box, text="MULTIPLAYER CO-OP PLATFORM",
-                           font=(CrysisTheme.FONT_UI, 8),
-                           fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL)
-        lbl_sub.pack(anchor="w")
+        # Keep the build and history in the existing header on every screen.
+        self.release_bar = tk.Frame(title_box, bg=CrysisTheme.BG_PANEL)
+        self.release_bar.pack(anchor="w")
+        self.version_label = tk.Label(
+            self.release_bar, text=f"v{LAUNCHER_VERSION}  |  BUILD {self.launcher_build}",
+            font=(CrysisTheme.FONT_MONO, 8),
+            fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_PANEL)
+        self.version_label.pack(side="left")
+        self.history_button = tk.Button(
+            self.release_bar, text="Version history", command=self.show_version_history,
+            font=(CrysisTheme.FONT_UI, 8), fg=CrysisTheme.TEXT_MAIN,
+            bg=CrysisTheme.BG_INPUT, activebackground=CrysisTheme.BORDER_LIGHT,
+            activeforeground=CrysisTheme.TEXT_MAIN, relief="flat", bd=0,
+            highlightthickness=0, padx=8, pady=0)
+        self.history_button.pack(side="left", padx=(10, 0))
 
         # Network IP & Callsign info on right
         info_box = tk.Frame(self.top_bar, bg=CrysisTheme.BG_PANEL)
@@ -497,6 +535,47 @@ class CrysisCoopLauncher(tk.Tk):
 
         # Start on landing view
         self.show_landing_view()
+
+    def show_version_history(self):
+        existing = getattr(self, "history_window", None)
+        if existing is not None and existing.winfo_exists():
+            existing.deiconify()
+            existing.lift()
+            return
+        modal = self.history_window = tk.Toplevel(self)
+        modal.title(f"Launcher version history - v{LAUNCHER_VERSION}")
+        modal.geometry("720x440")
+        modal.minsize(560, 300)
+        modal.configure(bg=CrysisTheme.BG_PANEL)
+        modal.transient(self)
+        tk.Label(modal, text=f"Launcher v{LAUNCHER_VERSION}  |  Build {self.launcher_build}",
+                 font=(CrysisTheme.FONT_MONO, 12, "bold"), fg=CrysisTheme.CYAN_ACCENT,
+                 bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=20, pady=(18, 6))
+        tk.Label(modal, text="Compare both values with your squad. Restart after updating.",
+                 font=(CrysisTheme.FONT_UI, 10), fg=CrysisTheme.TEXT_MAIN,
+                 bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=20)
+        tk.Label(modal, text="The build identifies launcher code; it does not verify game or mod files.",
+                 font=(CrysisTheme.FONT_UI, 9), fg=CrysisTheme.TEXT_MUTED,
+                 bg=CrysisTheme.BG_PANEL).pack(anchor="w", padx=20, pady=(4, 12))
+        body = tk.Frame(modal, bg=CrysisTheme.BG_PANEL)
+        body.pack(fill="both", expand=True, padx=20, pady=(0, 18))
+        history = tk.Text(body, wrap="word", font=(CrysisTheme.FONT_UI, 10),
+                          bg=CrysisTheme.BG_DARK, fg=CrysisTheme.TEXT_MAIN,
+                          selectbackground=CrysisTheme.BORDER_LIGHT, relief="flat",
+                          padx=12, pady=12, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(body, orient="vertical", command=history.yview)
+        scrollbar.pack(side="right", fill="y")
+        history.configure(yscrollcommand=scrollbar.set)
+        history.pack(fill="both", expand=True)
+        history.tag_configure("release", foreground=CrysisTheme.CYAN_ACCENT,
+                              font=(CrysisTheme.FONT_UI, 11, "bold"))
+        for version, date, changes in LAUNCHER_HISTORY:
+            history.insert("end", f"{version}  |  {date}\n", "release")
+            for change in changes:
+                history.insert("end", f"  • {change}\n")
+            history.insert("end", "\n")
+        history.configure(state="disabled")
+        modal.bind("<Escape>", lambda event: modal.destroy())
 
     def hide_all_views(self):
         self._lobby_scan_generation += 1
