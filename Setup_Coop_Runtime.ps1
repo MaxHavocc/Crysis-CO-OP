@@ -38,7 +38,19 @@ try {
         throw 'Installed runtime failed verification.'
     }
     Write-Output ('Installed C1-Launcher v8 for co-op: ' + $target)
-    Write-Output 'The original Bin32\Crysis.exe was preserved.'
+    
+    # Also update Bin32\Crysis.exe so existing Windows Firewall rules apply directly
+    $crysisExe = Join-Path $binDir 'Crysis.exe'
+    if (Test-Path -LiteralPath $crysisExe) {
+        if ((Get-FileHash -LiteralPath $crysisExe -Algorithm SHA256).Hash -ne $sourceHash) {
+            $steamBak = Join-Path $binDir 'Crysis.steam.bak'
+            if (-not (Test-Path -LiteralPath $steamBak)) {
+                Copy-Item -LiteralPath $crysisExe -Destination $steamBak -Force
+            }
+            Copy-Item -LiteralPath $source -Destination $crysisExe -Force
+            Write-Output ('Updated Bin32\Crysis.exe with C1-Launcher v8 (backed up original to Crysis.steam.bak)')
+        }
+    }
 }
 finally {
     $resolvedStaging = [IO.Path]::GetFullPath($staging)

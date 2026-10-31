@@ -38,6 +38,9 @@ if "%MOD_DIR%"=="" (
     exit /b 1
 )
 
+:: Strip trailing backslash if present so parent path resolution is exact
+if "%MOD_DIR:~-1%"=="\" set "MOD_DIR=%MOD_DIR:~0,-1%"
+
 cd /d "%MOD_DIR%"
 echo Found Crysis Co-op at: %MOD_DIR%
 echo.

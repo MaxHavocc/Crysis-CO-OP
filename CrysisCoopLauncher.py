@@ -2025,17 +2025,17 @@ class CrysisCoopLauncher(tk.Tk):
         return weapons
 
     def get_crysis_network_executable(self):
-        # C1-Launcher applies the legacy GameSpy direct-connect fix in memory
-        # while retaining the stock engine and Mods/CrysisCoop/Bin32 DLL.
-        # Keep it beside the original executable, which remains untouched.
-        executable = os.path.join(CRYSIS_ROOT_DIR, "Bin32", "CrysisCoop.exe")
-        if os.path.isfile(executable):
-            return executable
+        # Prefer Crysis.exe which has established Windows Firewall whitelisting rules across all network profiles
+        for name in ("Crysis.exe", "CrysisCoop.exe"):
+            cand = os.path.join(CRYSIS_ROOT_DIR, "Bin32", name)
+            if os.path.isfile(cand):
+                return cand
+        expected = os.path.join(CRYSIS_ROOT_DIR, "Bin32", "Crysis.exe")
         messagebox.showerror(
             "Crysis connection support missing",
             "The co-op runtime is missing.\n\n"
             "Run Setup_Coop_Runtime.ps1 in the mod folder, then try again.\n\n"
-            f"Expected file: {executable}",
+            f"Expected file: {expected}",
             parent=self,
         )
         return None
@@ -2073,6 +2073,7 @@ sv_cheatprotection 0
 net_lanbrowser 1
 log_verbosity 3
 net_log 0
+net_enable_tfrc 0
 net_disconnect_on_rmi_error 0
 net_inactivitytimeout 120
 sv_timeout_disconnect 120
@@ -2154,6 +2155,7 @@ map {mission_code} s
             exe_path,
             "-mod", "CrysisCoop",
             "-devmode",
+            "+g_skipIntro", "1",
             "+exec", "host.cfg"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
@@ -2251,6 +2253,7 @@ connect {host_ip} 64087
 sys_spec_Physics 1
 log_verbosity 3
 net_log 0
+net_enable_tfrc 0
 net_disconnect_on_rmi_error 0
 net_inactivitytimeout 120
 sv_timeout_disconnect 120
@@ -2346,6 +2349,7 @@ exec connect.cfg
             exe_path,
             "-mod", "CrysisCoop",
             "-devmode",
+            "+g_skipIntro", "1",
             "+exec", "client.cfg"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
