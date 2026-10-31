@@ -132,3 +132,7 @@ Crysis Root Directory (C:\Program Files (x86)\Steam\steamapps\common\Crysis)
 * If PowerShell blocks a setup script under its default execution policy, run it for this invocation only with `powershell -NoProfile -ExecutionPolicy Bypass -File .\Setup_Desktop_Shortcut.ps1` (or substitute `Setup_Coop_Runtime.ps1` for runtime setup).
 * Select **HOST CO-OP** on the host machine, and **JOIN CO-OP** on the squadmate machine.
 * Configure your loadouts in the lobby, click Ready, and launch!
+
+### Remote host diagnostics and local AI
+
+The [host development bridge](tools/host_bridge/HOST_BRIDGE.md) provides a one-time Windows OpenSSH setup for a teammate on Radmin VPN. It supports game logs, source/configuration reads, version checks, fast-forward Git updates, project tests/builds, and advice from an existing local Ollama model. Authentication uses a dedicated public key restricted to the developer's VPN address; Ollama stays on localhost. The host runs setup once and shares one connection record. Private SSH keys and connection records stay outside this repository.
