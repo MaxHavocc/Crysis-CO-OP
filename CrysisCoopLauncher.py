@@ -1875,6 +1875,16 @@ class CrysisCoopLauncher(tk.Tk):
                 self.broadcast_lobby_state()
                 self.after(0, self.update_lobby_room_ui)
 
+    def broadcast_to_clients(self, pkt):
+        if not self.is_host:
+            return
+        msg = (json.dumps(pkt) + "\n").encode("utf-8")
+        for c in list(self.host_clients):
+            try:
+                c.sendall(msg)
+            except Exception:
+                pass
+
     def broadcast_lobby_state(self):
         if not self.is_host:
             return
