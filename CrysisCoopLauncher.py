@@ -38,8 +38,13 @@ DEFAULT_PORT = 64088
 DISCOVERY_PORT = 64089
 
 # Add new releases at the top and bump the version when publishing launcher changes.
-LAUNCHER_VERSION = "1.0.0"
+LAUNCHER_VERSION = "1.0.1"
 LAUNCHER_HISTORY = (
+    ("1.0.1", "2026-10-31", (
+        "Clear stale Game.log before launch so HOST_READY waits for the live 99% hold screen.",
+        "Read full Game.log + 3.5s settle delay before signaling client auto-connect.",
+        "Use firewall-whitelisted Crysis.exe runtime, hud_startPaused 1, and auto-retry failsafe.",
+    )),
     ("1.0.0", "2026-10-28", (
         "Show the launcher version and build fingerprint on every screen.",
         "Add version history at the top of the launcher.",
@@ -1921,11 +1926,13 @@ class CrysisCoopLauncher(tk.Tk):
 
                     elif ptype == "HOST_READY":
                         # Host finished level loading and is ready for client
+                        self.host_is_ready = True
                         if hasattr(self, "client_launch_trigger") and self.client_launch_trigger:
                             self.after(0, self.client_launch_trigger)
 
                     elif ptype == "LAUNCH":
                         # Host triggered launch
+                        self.host_is_ready = False
                         m_code = pkt.get("mission_code", "island")
                         diff_val = pkt.get("difficulty", 2)
                         emult = pkt.get("enemy_multiplier", 1.0)
@@ -2156,6 +2163,13 @@ map {mission_code} s
             subprocess.Popen(cmd, cwd=os.path.dirname(warhead_exe))
             return
 
+        log_p = os.path.join(CRYSIS_ROOT_DIR, "Game.log")
+        try:
+            with open(log_p, "w", encoding="utf-8") as f_clr:
+                f_clr.write("")
+        except Exception:
+            pass
+
         cmd = [
             exe_path,
             "-mod", "CrysisCoop",
@@ -2166,14 +2180,21 @@ map {mission_code} s
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
         def watch_host_ready():
-            log_p = os.path.join(CRYSIS_ROOT_DIR, "Game.log")
-            for _ in range(45):
-                time.sleep(1)
+            # Wait for the new Crysis process to load the map and reach the 99% partner hold screen
+            time.sleep(4.0)
+            for _ in range(60):
+                time.sleep(1.0)
                 if os.path.exists(log_p):
                     try:
                         with open(log_p, "r", encoding="utf-8", errors="ignore") as f_log:
-                            tail = f_log.read()[-3000:]
-                        if "Waiting for partner" in tail or "OnClientEnteredGame" in tail or "Revived player" in tail:
+                            content = f_log.read()
+                        has_new_load = ("Loading level levels/" in content) or ("LOADING: Loading Level" in content)
+                        has_hold = ("Waiting for partner" in content) or ("OnClientEnteredGame - channel 1" in content)
+                        if has_new_load and has_hold:
+                            # Let post-spawn weapon/character asset streaming settle so UDP responds immediately
+                            time.sleep(3.5)
+                            self.broadcast_to_clients({"type": "HOST_READY"})
+                            time.sleep(1.0)
                             self.broadcast_to_clients({"type": "HOST_READY"})
                             break
                     except Exception:
@@ -2193,18 +2214,19 @@ map {mission_code} s
                  fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_DARK).pack(pady=(24, 6))
 
         m_name = mission_code.upper()
-        lbl_msg = tk.Label(modal, text=f"Squad Leader is initializing mission: {m_name}\nSynchronizing network connection in 25s (or when host is ready)...",
+        max_wait = 35
+        lbl_msg = tk.Label(modal, text=f"Waiting for Squad Leader to load mission: {m_name}...\nAuto-connecting as soon as host reaches 99% ({max_wait}s max)",
                            font=(CrysisTheme.FONT_UI, 10), fg=CrysisTheme.TEXT_MAIN, bg=CrysisTheme.BG_DARK)
         lbl_msg.pack(pady=10)
 
-        pbar = ttk.Progressbar(modal, orient="horizontal", length=380, mode="determinate", maximum=25)
+        pbar = ttk.Progressbar(modal, orient="horizontal", length=380, mode="determinate", maximum=max_wait)
         pbar.pack(pady=8)
         pbar["value"] = 0
 
-        tk.Label(modal, text=f"Target Server: {host_ip} 64087\n(Hotkeys F5/F6 inside Crysis will reconnect if ever dropped to menu)",
+        tk.Label(modal, text=f"Target Server: {host_ip} 64087\n(Do not force-connect early while host is still loading map)",
                  font=(CrysisTheme.FONT_MONO, 8), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_DARK).pack(pady=4)
 
-        timer_val = [25]
+        timer_val = [max_wait]
         launched = [False]
 
         def do_launch():
@@ -2230,11 +2252,6 @@ map {mission_code} s
         btn_row = tk.Frame(modal, bg=CrysisTheme.BG_DARK)
         btn_row.pack(pady=16)
 
-        btn_now = tk.Button(btn_row, text="CONNECT NOW", font=(CrysisTheme.FONT_UI, 10, "bold"),
-                            fg="#ffffff", bg=CrysisTheme.GREEN_ACCENT, bd=0, padx=18, pady=8, cursor="hand2",
-                            command=do_launch)
-        btn_now.pack(side="left", padx=8)
-
         def on_cancel():
             self.client_launch_trigger = None
             try:
@@ -2250,16 +2267,19 @@ map {mission_code} s
         btn_cancel.pack(side="left", padx=8)
 
         self.client_launch_trigger = do_launch
+        if getattr(self, "host_is_ready", False):
+            modal.after(100, do_launch)
+            return
 
         def tick():
             if launched[0]:
                 return
             timer_val[0] -= 1
-            pbar["value"] = 25 - timer_val[0]
+            pbar["value"] = max_wait - timer_val[0]
             if timer_val[0] <= 0:
                 do_launch()
             else:
-                lbl_msg.config(text=f"Squad Leader is initializing mission: {m_name}\nSynchronizing network connection in {timer_val[0]}s...")
+                lbl_msg.config(text=f"Waiting for Squad Leader to load mission: {m_name}...\nAuto-connecting as soon as host reaches 99% ({timer_val[0]}s)")
                 modal.after(1000, tick)
 
         modal.after(1000, tick)
@@ -2376,6 +2396,13 @@ bind f11 coop_god
                 subprocess.Popen(cmd, cwd=os.path.dirname(warhead_exe))
             return
 
+        client_log_p = os.path.join(CRYSIS_ROOT_DIR, "Game.log")
+        try:
+            with open(client_log_p, "w", encoding="utf-8") as f_clr:
+                f_clr.write("")
+        except Exception:
+            pass
+
         cmd = [
             exe_path,
             "-mod", "CrysisCoop",
@@ -2385,6 +2412,34 @@ bind f11 coop_god
             "+connect", host_ip, "64087"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
+
+        def watch_client_connect():
+            # Self-healing failsafe: if first UDP handshake ever hits congestion backoff and drops to menu, auto-retry once
+            retried = False
+            for _ in range(40):
+                time.sleep(1.0)
+                if not os.path.exists(client_log_p):
+                    continue
+                try:
+                    with open(client_log_p, "r", encoding="utf-8", errors="ignore") as f_cl:
+                        cl_content = f_cl.read()
+                    if "Loading level levels/" in cl_content or "LOADING: Loading Level" in cl_content or "Game rules class: Coop" in cl_content:
+                        return
+                    if not retried and ("requests backoff due to congestion" in cl_content or "Connection timed out" in cl_content):
+                        retried = True
+                        time.sleep(4.0)
+                        subprocess.run(["taskkill", "/F", "/IM", "CrysisCoop.exe", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
+                                       capture_output=True, timeout=5)
+                        time.sleep(1.0)
+                        try:
+                            with open(client_log_p, "w", encoding="utf-8") as f_clr2:
+                                f_clr2.write("")
+                        except Exception:
+                            pass
+                        subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
+                except Exception:
+                    pass
+        threading.Thread(target=watch_client_connect, daemon=True).start()
 
 if __name__ == "__main__":
     app = CrysisCoopLauncher()
