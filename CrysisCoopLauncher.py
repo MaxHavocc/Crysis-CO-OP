@@ -1919,6 +1919,11 @@ class CrysisCoopLauncher(tk.Tk):
                         self.remote_players = {k: v for k, v in rem.items() if k != local_callsign}
                         self.after(0, self.update_lobby_room_ui)
 
+                    elif ptype == "HOST_READY":
+                        # Host finished level loading and is ready for client
+                        if hasattr(self, "client_launch_trigger") and self.client_launch_trigger:
+                            self.after(0, self.client_launch_trigger)
+
                     elif ptype == "LAUNCH":
                         # Host triggered launch
                         m_code = pkt.get("mission_code", "island")
@@ -2095,7 +2100,7 @@ coop_disable_o2 {1 if disable_drowning else 0}
 coop_enemy_mult {int(enemy_mult)}
 coop_ammo_multiplier {ammo_mult}
 hud_subtitles 1
-hud_startPaused 0
+hud_startPaused 1
 bind f10 coop_teleport
 bind f8 coop_skip_cutscene
 bind f9 coop_menu
@@ -2160,6 +2165,21 @@ map {mission_code} s
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 
+        def watch_host_ready():
+            log_p = os.path.join(CRYSIS_ROOT_DIR, "Game.log")
+            for _ in range(45):
+                time.sleep(1)
+                if os.path.exists(log_p):
+                    try:
+                        with open(log_p, "r", encoding="utf-8", errors="ignore") as f_log:
+                            tail = f_log.read()[-3000:]
+                        if "Waiting for partner" in tail or "OnClientEnteredGame" in tail or "Revived player" in tail:
+                            self.broadcast_to_clients({"type": "HOST_READY"})
+                            break
+                    except Exception:
+                        pass
+        threading.Thread(target=watch_host_ready, daemon=True).start()
+
     def show_client_launch_countdown(self, host_ip, mission_code, difficulty_val,
                                      enemy_mult, ammo_mult, disable_drowning, enable_attachments):
         modal = tk.Toplevel(self)
@@ -2173,24 +2193,25 @@ map {mission_code} s
                  fg=CrysisTheme.CYAN_ACCENT, bg=CrysisTheme.BG_DARK).pack(pady=(24, 6))
 
         m_name = mission_code.upper()
-        lbl_msg = tk.Label(modal, text=f"Squad Leader is initializing mission: {m_name}\nSynchronizing network connection in 12s...",
+        lbl_msg = tk.Label(modal, text=f"Squad Leader is initializing mission: {m_name}\nSynchronizing network connection in 25s (or when host is ready)...",
                            font=(CrysisTheme.FONT_UI, 10), fg=CrysisTheme.TEXT_MAIN, bg=CrysisTheme.BG_DARK)
         lbl_msg.pack(pady=10)
 
-        pbar = ttk.Progressbar(modal, orient="horizontal", length=380, mode="determinate", maximum=12)
+        pbar = ttk.Progressbar(modal, orient="horizontal", length=380, mode="determinate", maximum=25)
         pbar.pack(pady=8)
         pbar["value"] = 0
 
         tk.Label(modal, text=f"Target Server: {host_ip} 64087\n(Hotkeys F5/F6 inside Crysis will reconnect if ever dropped to menu)",
                  font=(CrysisTheme.FONT_MONO, 8), fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_DARK).pack(pady=4)
 
-        timer_val = [12]
+        timer_val = [25]
         launched = [False]
 
         def do_launch():
             if launched[0]:
                 return
             launched[0] = True
+            self.client_launch_trigger = None
             try:
                 modal.destroy()
             except Exception:
@@ -2214,16 +2235,27 @@ map {mission_code} s
                             command=do_launch)
         btn_now.pack(side="left", padx=8)
 
+        def on_cancel():
+            self.client_launch_trigger = None
+            try:
+                modal.destroy()
+            except Exception:
+                pass
+
+        modal.protocol("WM_DELETE_WINDOW", on_cancel)
+
         btn_cancel = tk.Button(btn_row, text="CANCEL", font=(CrysisTheme.FONT_UI, 10),
                                fg=CrysisTheme.TEXT_MUTED, bg=CrysisTheme.BG_PANEL, bd=1, padx=16, pady=8, cursor="hand2",
-                               command=modal.destroy)
+                               command=on_cancel)
         btn_cancel.pack(side="left", padx=8)
+
+        self.client_launch_trigger = do_launch
 
         def tick():
             if launched[0]:
                 return
             timer_val[0] -= 1
-            pbar["value"] = 12 - timer_val[0]
+            pbar["value"] = 25 - timer_val[0]
             if timer_val[0] <= 0:
                 do_launch()
             else:
@@ -2278,7 +2310,7 @@ coop_disable_o2 {1 if disable_drowning else 0}
 coop_enemy_mult {int(enemy_mult)}
 coop_ammo_multiplier {ammo_mult}
 hud_subtitles 1
-hud_startPaused 0
+hud_startPaused 1
 bind f5 exec connect.cfg
 bind f6 exec connect.cfg
 bind f10 coop_teleport
