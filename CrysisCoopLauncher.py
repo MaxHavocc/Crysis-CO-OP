@@ -2285,7 +2285,6 @@ bind f10 coop_teleport
 bind f8 coop_skip_cutscene
 bind f9 coop_menu
 bind f11 coop_god
-exec connect.cfg
 """
         try:
             subprocess.run(["taskkill", "/F", "/IM", "CrysisCoop.exe", "/IM", "Crysis.exe", "/IM", "Crysis64.exe"],
@@ -2350,7 +2349,8 @@ exec connect.cfg
             "-mod", "CrysisCoop",
             "-devmode",
             "+g_skipIntro", "1",
-            "+exec", "client.cfg"
+            "+exec", "client.cfg",
+            "+connect", host_ip, "64087"
         ]
         subprocess.Popen(cmd, cwd=os.path.dirname(exe_path))
 

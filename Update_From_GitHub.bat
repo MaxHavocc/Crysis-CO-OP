@@ -85,7 +85,7 @@ if not exist "%MOD_DIR%\..\..\Bin32\CrysisCoop.exe" (
 
 :POST_UPDATE
 echo [3/4] Skipping intro logo videos...
-powershell -Command "$videoDir = Join-Path (Split-Path (Split-Path '%MOD_DIR%')) 'Game\Localized\Video'; if (Test-Path $videoDir) { Get-ChildItem -Path $videoDir -Recurse -Filter 'Trailer_*.sfd' | ForEach-Object { Move-Item -Path $_.FullName -Destination ($_.FullName + '.bak') -Force -ErrorAction SilentlyContinue } }"
+powershell -Command "$videoDir = Join-Path (Split-Path (Split-Path '%MOD_DIR%')) 'Game\Localized\Video'; if (Test-Path $videoDir) { Get-ChildItem -Path $videoDir -Recurse -Include 'Trailer_*.sfd', 'Intro.sfd', 'CryTek.sfd' | ForEach-Object { Move-Item -Path $_.FullName -Destination ($_.FullName + '.bak') -Force -ErrorAction SilentlyContinue } }"
 echo [OK] Intro videos disabled.
 
 echo [4/4] Setting up Desktop shortcuts...
