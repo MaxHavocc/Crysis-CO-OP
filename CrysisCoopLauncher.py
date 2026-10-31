@@ -2086,13 +2086,12 @@ class CrysisCoopLauncher(tk.Tk):
         cfg_content = f"""sys_spec_ObjectDetail 1
 sys_spec_Physics 1
 sv_bind 0.0.0.0
-sv_hostname {bind_ip}
 sv_servername CrysisCoopServer
 sv_gamerules Coop
 sv_port 64087
 sv_lanonly 1
 sv_cheatprotection 0
-net_lanbrowser 1
+net_lanbrowser 0
 log_verbosity 3
 net_log 0
 net_enable_tfrc 0
@@ -2320,6 +2319,7 @@ net_disconnect_on_rmi_error 0
 net_inactivitytimeout 120
 sv_timeout_disconnect 120
 net_enable_voice_chat 0
+net_lanbrowser 0
 sv_lanonly 1
 cl_serveraddr {host_ip}
 cl_serverport 64087
